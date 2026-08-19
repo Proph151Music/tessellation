@@ -213,7 +213,11 @@ object SnapshotDownloadStorage {
 
       def moveTmpToPersisted(snapshot: Signed[GlobalIncrementalSnapshot]): F[Unit] =
         HasherSelector[F].withCurrent { implicit hasher =>
-          persistedStorage.getPath(snapshot).flatMap(tmpStorage.moveByOrdinal(snapshot, _) >> persistedStorage.link(snapshot))
+          persistedStorage.getPath(snapshot).flatMap { path =>
+            persistedStorage.delete(snapshot.ordinal) >>
+              tmpStorage.moveByOrdinal(snapshot, path) >>
+              persistedStorage.link(snapshot)
+          }
         }
 
       def readGenesis(ordinal: SnapshotOrdinal): F[Option[Signed[GlobalSnapshot]]] = fullGlobalSnapshotStorage.read(ordinal)
