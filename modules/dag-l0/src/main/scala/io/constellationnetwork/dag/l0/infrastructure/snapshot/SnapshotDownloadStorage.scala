@@ -115,8 +115,8 @@ object SnapshotDownloadStorage {
 
       private def hasSnapshotInfo(ordinal: SnapshotOrdinal): F[Boolean] =
         hashSelect.select(ordinal) match {
-          case JsonHash => snapshotInfoStorage.exists(ordinal)
-          case KryoHash => snapshotInfoKryoStorage.exists(ordinal)
+          case JsonHash => snapshotInfoStorage.read(ordinal).map(_.isDefined)
+          case KryoHash => snapshotInfoKryoStorage.read(ordinal).map(_.isDefined)
         }
 
       def hasCorrectSnapshotInfo(
