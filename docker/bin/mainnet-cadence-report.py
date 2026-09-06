@@ -37,6 +37,10 @@ def summarize(root):
         after = [p for p in points if restored_at is not None and p["time"] > restored_at]
         progress_after_restore.append(dict(node=node, advanced=bool(before and after and after[-1]["ordinal"] > before[-1]["ordinal"])))
     phases = []
+    healthy_recovery_locks = []
+    five_ready_at = next((e["time"] for e in events if e["kind"] == "five_ready"), None)
+    paused_at = next((e["time"] for e in events if e["kind"] == "paused"), None)
+    day_start = int(events[0]["time"] // 86400) * 86400
     ansi = re.compile(r"\x1b\[[0-9;]*m")
     # Stock logs already timestamp actual phase transitions. The parser measures
     # phase durations from those transitions, not by dividing an aggregate mean.
@@ -44,18 +48,25 @@ def summarize(root):
         content = ansi.sub("", log.read_text(errors="replace"))
         records = re.findall(
             r"(\d\d):(\d\d):(\d\d\.\d+) [^\n]*State (?:created|updated) ConsensusState\{\s*"
-            r"key=SnapshotOrdinal\{value=(\d+)\}[^\n]*?status=(CollectingFacilities|CollectingProposals|CollectingSignatures|Finished)",
+            r"key=SnapshotOrdinal\{value=(\d+)\}[^\n]*?lockStatus=(\w+)[^\n]*?status=(CollectingFacilities|CollectingProposals|CollectingSignatures|Finished)",
             content,
         )
         rounds = collections.defaultdict(dict)
         rollover = 0
         previous = 0
-        for h, m, s, ordinal, phase in records:
+        seen_locks = set()
+        for h, m, s, ordinal, lock_status, phase in records:
             timestamp = int(h) * 3600 + int(m) * 60 + float(s)
             if timestamp < previous - 43200:
                 rollover += 86400
             previous = timestamp
             rounds[int(ordinal)].setdefault(phase, timestamp + rollover)
+            absolute = day_start + timestamp + rollover
+            if (lock_status == "Closed" and (ordinal, phase) not in seen_locks
+                    and five_ready_at is not None and paused_at is not None
+                    and five_ready_at < absolute < paused_at):
+                seen_locks.add((ordinal, phase))
+                healthy_recovery_locks.append(dict(node=log.stem, ordinal=int(ordinal), phase=phase, time=absolute))
         names = ["CollectingFacilities", "CollectingProposals", "CollectingSignatures", "Finished"]
         for ordinal, transitions in sorted(rounds.items()):
             if all(name in transitions for name in names):
@@ -71,11 +82,13 @@ def summarize(root):
                    ordinals_compared_across_nodes=sum(len(v) > 1 for v in observers.values()),
                    same_ordinal_value_conflicts=conflicts, nonlocal_or_duplicate_signers=invalid_signer_sets,
                    ordinal_regressions=regressions,
+                   healthy_recovery_locks=healthy_recovery_locks,
                    progress_after_restore=progress_after_restore,
                    final_api_availability=[tip is not None for tip in rows[-1]["tips"]] if rows else [],
                    node_ranges=[dict(node=i, first=p[0]["ordinal"] if p else None,
                                      last=p[-1]["ordinal"] if p else None) for i, p in enumerate(changes)],
                    complete_phase_records=len(phases),
+                   nodes_with_complete_phase_records=len({p["node"] for p in phases}),
                    median_round_seconds=statistics.median(p["total_seconds"] for p in phases) if phases else None,
                    limitations=["Sampled values are JSON digests, not protocol hashes or independent signature verification.",
                                 "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
@@ -83,7 +96,8 @@ def summarize(root):
     (root / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
     (root / "phase-durations.json").write_text(json.dumps(phases, indent=2) + "\n")
     print(json.dumps({k: v for k, v in summary.items() if k != "events"}, indent=2))
-    if (conflicts or invalid_signer_sets or regressions or not summary["completed"]
+    if (conflicts or invalid_signer_sets or regressions or healthy_recovery_locks or not summary["completed"]
+            or summary["nodes_with_complete_phase_records"] != 5
             or not any(e["kind"] == "five_ready" for e in events)
             or not all(p["advanced"] for p in progress_after_restore[:4])):
         raise SystemExit(1)
