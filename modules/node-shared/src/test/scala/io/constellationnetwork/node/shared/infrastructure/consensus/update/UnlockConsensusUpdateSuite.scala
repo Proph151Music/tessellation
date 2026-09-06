@@ -2,11 +2,12 @@ package io.constellationnetwork.node.shared.infrastructure.consensus.update
 
 import cats.syntax.all._
 
-import scala.concurrent.duration.FiniteDuration
+import scala.concurrent.duration._
 
 import io.constellationnetwork.node.shared.infrastructure.consensus._
 import io.constellationnetwork.schema.peer.PeerId
 import io.constellationnetwork.security.hash.Hash
+import io.constellationnetwork.security.hex.Hex
 
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.Gen
@@ -32,6 +33,37 @@ object UnlockConsensusUpdateSuite extends SimpleIOSuite with Checkers {
       )
 
   override def checkConfig: CheckConfig = CheckConfig.default.copy(minimumSuccessful = 40)
+
+  private val fivePeers = (1 to 5).toList.map(i => PeerId(Hex(f"$i%0128x")))
+  private val fivePeerState = ConsensusState[Key, Status, Outcome, Kind](
+    1,
+    (),
+    Facilitators(fivePeers),
+    Left(()),
+    Duration.Zero,
+    lockStatus = LockStatus.Closed,
+    spreadAckKinds = Set.empty
+  )
+
+  test("outsider acknowledgments cannot complete a five-facilitator recovery decision") {
+    val received = fivePeers.dropRight(1).toSet
+    val outsider = PeerId(Hex("f" * 128))
+    val acks = (fivePeers.take(2) :+ outsider).map(peer => (peer, ()) -> received).toMap
+    UnlockConsensusUpdate.tryUnlock[F, ConsensusState[Key, Status, Outcome, Kind], Kind](acks)(_ => Some(())).run(fivePeerState).map {
+      case (state, _) => expect.same(state, fivePeerState)
+    }
+  }
+
+  test("existing recovery requires three current facilitators to remove one missing peer from five") {
+    val received = fivePeers.dropRight(1).toSet
+    val acks = fivePeers.take(3).map(peer => (peer, ()) -> received).toMap
+    UnlockConsensusUpdate.tryUnlock[F, ConsensusState[Key, Status, Outcome, Kind], Kind](acks)(_ => Some(())).run(fivePeerState).map {
+      case (state, _) =>
+        expect.same(state.lockStatus, LockStatus.Reopened) &&
+        expect.same(state.facilitators.value.toSet, received) &&
+        expect.same(state.removedFacilitators.value, fivePeers.takeRight(1).toSet)
+    }
+  }
 
   test("state either transitions to target state or remains in initial state, regardless of what subset of acks is processed") {
     forall(lockedStateAndResourcesGen) {

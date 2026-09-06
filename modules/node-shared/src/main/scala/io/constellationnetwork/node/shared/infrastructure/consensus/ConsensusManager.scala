@@ -159,29 +159,22 @@ object ConsensusManager {
           .trySetInitialConsensusOutcome(initialOutcome)
           .ifM(
             consensusStorage.trySetObservationKey(lastKey) >>
-              scheduleFacility,
+              scheduleFacility(none),
             new Throwable("Error initializing consensus storage").raiseError[F, Unit]
           )
 
-      private def scheduleFacility: F[Unit] =
-        Clock[F].monotonic.map(_ + config.timeTriggerInterval).flatMap { nextTimeValue =>
-          consensusStorage.setTimeTrigger(nextTimeValue) >>
-            S.supervise {
-              val condTriggerWithTime = for {
-                maybeTimeTrigger <- consensusStorage.getTimeTrigger
-                currentTime <- Clock[F].monotonic
-                _ <- Applicative[F]
-                  .whenA(maybeTimeTrigger.exists(currentTime >= _))(internalFacilitateWith(TimeTrigger.some))
-              } yield ()
-
-              Temporal[F].sleep(config.timeTriggerInterval) >> condTriggerWithTime
-                .handleErrorWith(logger.error(_)(s"Error triggering consensus with time trigger"))
-            }.void
-        }
+      private def scheduleFacility(previousRoundStartedAt: Option[FiniteDuration]): F[Unit] =
+        ConsensusTimeTrigger.schedule(
+          config,
+          previousRoundStartedAt,
+          consensusStorage.setTimeTrigger,
+          consensusStorage.getTimeTrigger
+        )(internalFacilitateWith(TimeTrigger.some))
 
       def withdrawFromConsensus: F[Unit] =
         for {
           maybeLastOutcome <- consensusStorage.clearAndGetLastConsensusOutcome
+          _ <- consensusStorage.clearTimeTrigger
           _ <- maybeLastOutcome.traverse { lastOutcome =>
             consensusStateRemover.withdrawFromConsensus(_key.get(lastOutcome).next)
           }
@@ -229,7 +222,7 @@ object ConsensusManager {
                   consensusStorage
                     .tryUpdateLastConsensusOutcomeWithCleanup(previousKey, newOutcome)
                     .ifM(
-                      afterConsensusFinish(_trigger.get(newOutcome)),
+                      afterConsensusFinish(_trigger.get(newOutcome), newState.createdAt),
                       logger.info("Skip triggering another consensus")
                     ) >>
                   nodeStorage.tryModifyStateGetResult(WaitingForReady, Ready).void
@@ -240,10 +233,10 @@ object ConsensusManager {
           case None => Applicative[F].unit
         }
 
-      private def afterConsensusFinish(majorityTrigger: ConsensusTrigger): F[Unit] =
+      private def afterConsensusFinish(majorityTrigger: ConsensusTrigger, roundStartedAt: FiniteDuration): F[Unit] =
         majorityTrigger match {
           case EventTrigger => afterEventTrigger
-          case TimeTrigger  => afterTimeTrigger
+          case TimeTrigger  => afterTimeTrigger(roundStartedAt)
         }
 
       private def afterEventTrigger: F[Unit] =
@@ -262,8 +255,8 @@ object ConsensusManager {
               Applicative[F].unit
         } yield ()
 
-      private def afterTimeTrigger: F[Unit] =
-        scheduleFacility >> consensusStorage.containsTriggerEvent
+      private def afterTimeTrigger(roundStartedAt: FiniteDuration): F[Unit] =
+        scheduleFacility(roundStartedAt.some) >> consensusStorage.containsTriggerEvent
           .ifM(internalFacilitateWith(EventTrigger.some), Applicative[F].unit)
 
       private def stallDetection(key: Key, state: ConsensusState[Key, Status, Outcome, Kind]): F[Unit] =

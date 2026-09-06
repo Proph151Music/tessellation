@@ -145,8 +145,11 @@ object types {
     declarationRangeLimit: NonNegLong,
     lockDuration: FiniteDuration,
     peersDeclarationTimeout: FiniteDuration,
-    eventCutter: EventCutterConfig
-  )
+    eventCutter: EventCutterConfig,
+    timeTriggerPeriod: Option[FiniteDuration] = None
+  ) {
+    require(timeTriggerPeriod.forall(_ > scala.concurrent.duration.Duration.Zero), "timeTriggerPeriod must be positive when configured")
+  }
 
   case class EventCutterConfig(
     maxBinarySizeBytes: PosInt,
