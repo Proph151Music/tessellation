@@ -15,7 +15,7 @@ import io.constellationnetwork.node.shared.domain.statechannel.FeeCalculator
 import io.constellationnetwork.node.shared.infrastructure.consensus._
 import io.constellationnetwork.node.shared.infrastructure.consensus.declaration.Facility
 import io.constellationnetwork.node.shared.infrastructure.consensus.message.ConsensusPeerDeclaration
-import io.constellationnetwork.node.shared.infrastructure.consensus.trigger.ConsensusTrigger
+import io.constellationnetwork.node.shared.infrastructure.consensus.trigger.{ConsensusTrigger, TimeTrigger}
 import io.constellationnetwork.node.shared.snapshot.currency._
 import io.constellationnetwork.schema.address.Address
 import io.constellationnetwork.schema.currencyMessage.{MessageOrdinal, MessageType, fetchOwnerAddress}
@@ -149,7 +149,9 @@ object CurrencySnapshotConsensusStateCreator {
           ),
           time,
           withdrawnFacilitators = WithdrawnFacilitators(withdrawn.toSet),
-          spreadAckKinds = Set.empty
+          spreadAckKinds = Set.empty,
+          triggerStartedAt = maybeTrigger.as(time),
+          timeTriggerStartedAt = maybeTrigger.collect { case TimeTrigger => time }
         )
       } yield (state, effect)
   }

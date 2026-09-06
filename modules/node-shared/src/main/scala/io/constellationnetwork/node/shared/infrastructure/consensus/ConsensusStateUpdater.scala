@@ -148,6 +148,7 @@ object ConsensusStateUpdater {
         state: ConsensusState[Key, Status, Outcome, Kind]
       ): F[(ConsensusState[Key, Status, Outcome, Kind], F[Unit])] = {
         val stateAndEffect = for {
+          _ <- StateT.modifyF[F, ConsensusState[Key, Status, Outcome, Kind]](ConsensusTimeTrigger.observeTriggers(_, resources))
           _ <- unlockConsensusFn(resources)
           _ <- updateFacilitators(resources)
           effect1 <- spreadHistoricalAck(resources)

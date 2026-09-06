@@ -163,10 +163,10 @@ object ConsensusManager {
             new Throwable("Error initializing consensus storage").raiseError[F, Unit]
           )
 
-      private def scheduleFacility(previousRoundStartedAt: Option[FiniteDuration]): F[Unit] =
+      private def scheduleFacility(previousTimedStart: Option[FiniteDuration]): F[Unit] =
         ConsensusTimeTrigger.schedule(
           config,
-          previousRoundStartedAt,
+          previousTimedStart,
           consensusStorage.setTimeTrigger,
           consensusStorage.getTimeTrigger
         )(internalFacilitateWith(TimeTrigger.some))
@@ -222,21 +222,25 @@ object ConsensusManager {
                   consensusStorage
                     .tryUpdateLastConsensusOutcomeWithCleanup(previousKey, newOutcome)
                     .ifM(
-                      afterConsensusFinish(_trigger.get(newOutcome), newState.createdAt),
+                      afterConsensusFinish(_trigger.get(newOutcome), newState.timeTriggerStartedAt),
                       logger.info("Skip triggering another consensus")
                     ) >>
                   nodeStorage.tryModifyStateGetResult(WaitingForReady, Ready).void
               case None =>
-                stallDetection(key, newState).whenA(oldState.status =!= newState.status) >>
+                stallDetection(key, newState)
+                  .whenA(
+                    oldState.status =!= newState.status ||
+                      (config.timeTriggerPeriod.nonEmpty && oldState.triggerStartedAt.isEmpty && newState.triggerStartedAt.nonEmpty)
+                  ) >>
                   internalCheckForStateUpdate(key, resources)
             }
           case None => Applicative[F].unit
         }
 
-      private def afterConsensusFinish(majorityTrigger: ConsensusTrigger, roundStartedAt: FiniteDuration): F[Unit] =
+      private def afterConsensusFinish(majorityTrigger: ConsensusTrigger, previousTimedStart: Option[FiniteDuration]): F[Unit] =
         majorityTrigger match {
           case EventTrigger => afterEventTrigger
-          case TimeTrigger  => afterTimeTrigger(roundStartedAt)
+          case TimeTrigger  => afterTimeTrigger(previousTimedStart)
         }
 
       private def afterEventTrigger: F[Unit] =
@@ -255,8 +259,8 @@ object ConsensusManager {
               Applicative[F].unit
         } yield ()
 
-      private def afterTimeTrigger(roundStartedAt: FiniteDuration): F[Unit] =
-        scheduleFacility(roundStartedAt.some) >> consensusStorage.containsTriggerEvent
+      private def afterTimeTrigger(previousTimedStart: Option[FiniteDuration]): F[Unit] =
+        scheduleFacility(previousTimedStart) >> consensusStorage.containsTriggerEvent
           .ifM(internalFacilitateWith(EventTrigger.some), Applicative[F].unit)
 
       private def stallDetection(key: Key, state: ConsensusState[Key, Status, Outcome, Kind]): F[Unit] =
@@ -273,7 +277,7 @@ object ConsensusManager {
                     }
               }
             }
-        }.void
+        }.void.whenA(ConsensusTimeTrigger.shouldDetectStall(config, state))
 
     }
 

@@ -11,7 +11,7 @@ import io.constellationnetwork.node.shared.domain.gossip.Gossip
 import io.constellationnetwork.node.shared.infrastructure.consensus._
 import io.constellationnetwork.node.shared.infrastructure.consensus.declaration.Facility
 import io.constellationnetwork.node.shared.infrastructure.consensus.message.ConsensusPeerDeclaration
-import io.constellationnetwork.node.shared.infrastructure.consensus.trigger.ConsensusTrigger
+import io.constellationnetwork.node.shared.infrastructure.consensus.trigger.{ConsensusTrigger, TimeTrigger}
 import io.constellationnetwork.schema.peer.PeerId
 
 abstract class GlobalSnapshotConsensusStateCreator[F[_]: Sync]
@@ -83,7 +83,9 @@ object GlobalSnapshotConsensusStateCreator {
           ),
           time,
           withdrawnFacilitators = WithdrawnFacilitators(withdrawn.toSet),
-          spreadAckKinds = Set.empty
+          spreadAckKinds = Set.empty,
+          triggerStartedAt = maybeTrigger.as(time),
+          timeTriggerStartedAt = maybeTrigger.collect { case TimeTrigger => time }
         )
       } yield (state, effect)
   }
