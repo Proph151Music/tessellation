@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""Summarize isolated-devnet evidence; sampled agreement is not a safety proof."""
+import argparse
+import collections
+import json
+import pathlib
+import re
+import statistics
+
+
+def summarize(root):
+    events = json.loads((root / "events.json").read_text())
+    rows = [json.loads(line) for line in (root / "samples.jsonl").read_text().splitlines()]
+    local_ids = {p["id"] for p in json.loads((root / "peers.json").read_text())}
+    values = collections.defaultdict(set)
+    observers = collections.defaultdict(set)
+    changes = [[] for _ in range(5)]
+    invalid_signer_sets = []
+    for row in rows:
+        for node, tip in enumerate(row["tips"]):
+            if tip is None:
+                continue
+            ordinal = tip["ordinal"]
+            values[ordinal].add(tip["digest"])
+            observers[ordinal].add(node)
+            if len(tip["signers"]) != len(set(tip["signers"])) or not set(tip["signers"]) <= local_ids:
+                invalid_signer_sets.append(dict(node=node, ordinal=ordinal))
+            if not changes[node] or changes[node][-1]["ordinal"] != ordinal:
+                changes[node].append(dict(time=row["time"], **tip))
+    regressions = [dict(node=n, previous=a["ordinal"], current=b["ordinal"])
+                   for n, points in enumerate(changes) for a, b in zip(points, points[1:]) if b["ordinal"] < a["ordinal"]]
+    conflicts = {str(k): sorted(v) for k, v in values.items() if len(v) != 1}
+    restored_at = next((e["time"] for e in events if e["kind"] == "restored"), None)
+    progress_after_restore = []
+    for node, points in enumerate(changes):
+        before = [p for p in points if restored_at is not None and p["time"] <= restored_at]
+        after = [p for p in points if restored_at is not None and p["time"] > restored_at]
+        progress_after_restore.append(dict(node=node, advanced=bool(before and after and after[-1]["ordinal"] > before[-1]["ordinal"])))
+    phases = []
+    ansi = re.compile(r"\x1b\[[0-9;]*m")
+    # Stock logs already timestamp actual phase transitions. The parser measures
+    # phase durations from those transitions, not by dividing an aggregate mean.
+    for log in root.glob("mc-*.log"):
+        content = ansi.sub("", log.read_text(errors="replace"))
+        records = re.findall(
+            r"(\d\d):(\d\d):(\d\d\.\d+) [^\n]*State (?:created|updated) ConsensusState\{\s*"
+            r"key=SnapshotOrdinal\{value=(\d+)\}[^\n]*?status=(CollectingFacilities|CollectingProposals|CollectingSignatures|Finished)",
+            content,
+        )
+        rounds = collections.defaultdict(dict)
+        rollover = 0
+        previous = 0
+        for h, m, s, ordinal, phase in records:
+            timestamp = int(h) * 3600 + int(m) * 60 + float(s)
+            if timestamp < previous - 43200:
+                rollover += 86400
+            previous = timestamp
+            rounds[int(ordinal)].setdefault(phase, timestamp + rollover)
+        names = ["CollectingFacilities", "CollectingProposals", "CollectingSignatures", "Finished"]
+        for ordinal, transitions in sorted(rounds.items()):
+            if all(name in transitions for name in names):
+                phases.append(dict(node=log.stem, ordinal=ordinal,
+                                   facilities_seconds=round(transitions[names[1]] - transitions[names[0]], 3),
+                                   proposals_seconds=round(transitions[names[2]] - transitions[names[1]], 3),
+                                   signatures_seconds=round(transitions[names[3]] - transitions[names[2]], 3),
+                                   total_seconds=round(transitions[names[3]] - transitions[names[0]], 3),
+                                   next_start_gap_seconds=round(rounds[ordinal + 1][names[0]] - transitions[names[3]], 3)
+                                   if names[0] in rounds.get(ordinal + 1, {}) else None))
+    summary = dict(run=str(root), completed=any(e["kind"] == "completed" for e in events),
+                   events=events, samples=len(rows), observed_ordinals=len(values),
+                   ordinals_compared_across_nodes=sum(len(v) > 1 for v in observers.values()),
+                   same_ordinal_value_conflicts=conflicts, nonlocal_or_duplicate_signers=invalid_signer_sets,
+                   ordinal_regressions=regressions,
+                   progress_after_restore=progress_after_restore,
+                   final_api_availability=[tip is not None for tip in rows[-1]["tips"]] if rows else [],
+                   node_ranges=[dict(node=i, first=p[0]["ordinal"] if p else None,
+                                     last=p[-1]["ordinal"] if p else None) for i, p in enumerate(changes)],
+                   complete_phase_records=len(phases),
+                   median_round_seconds=statistics.median(p["total_seconds"] for p in phases) if phases else None,
+                   limitations=["Sampled values are JSON digests, not protocol hashes or independent signature verification.",
+                                "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
+                                "Fault injection is wall-time based, not phase-aligned; do not infer causal throughput gains from it."])
+    (root / "summary.json").write_text(json.dumps(summary, indent=2) + "\n")
+    (root / "phase-durations.json").write_text(json.dumps(phases, indent=2) + "\n")
+    print(json.dumps({k: v for k, v in summary.items() if k != "events"}, indent=2))
+    if (conflicts or invalid_signer_sets or regressions or not summary["completed"]
+            or not any(e["kind"] == "five_ready" for e in events)
+            or not all(p["advanced"] for p in progress_after_restore[:4])):
+        raise SystemExit(1)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("run", type=pathlib.Path)
+    summarize(parser.parse_args().run.resolve())

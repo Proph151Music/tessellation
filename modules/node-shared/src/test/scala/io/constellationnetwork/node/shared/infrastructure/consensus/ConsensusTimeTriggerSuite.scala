@@ -63,12 +63,14 @@ object ConsensusTimeTriggerSuite extends SimpleIOSuite {
   }
 
   test("zero and negative periods are rejected") {
-    List(Duration.Zero, (-1).second).traverse { period =>
+    List(Duration.Zero, -1.second).traverse { period =>
       IO(legacy.copy(timeTriggerPeriod = Some(period))).attempt.map(result => expect(result.isLeft))
     }.map(_.reduce(_ && _))
   }
 
-  private def withTimer(test: (Option[FiniteDuration] => IO[Unit], Ref[IO, Option[FiniteDuration]], Ref[IO, List[FiniteDuration]]) => IO[weaver.Expectations]) =
+  private def withTimer(
+    test: (Option[FiniteDuration] => IO[Unit], Ref[IO, Option[FiniteDuration]], Ref[IO, List[FiniteDuration]]) => IO[weaver.Expectations]
+  ) =
     TestControl.executeEmbed {
       Supervisor[IO].use { implicit supervisor =>
         for {
@@ -150,6 +152,18 @@ object ConsensusTimeTriggerSuite extends SimpleIOSuite {
         _ <- IO.sleep(200.seconds)
         result <- fired.get
       } yield expect.same(result, List(200.seconds))
+    }
+  }
+
+  test("an older callback cannot fire again after a replacement's earlier deadline") {
+    withTimer { (schedule, _, fired) =>
+      for {
+        _ <- schedule(Some(Duration.Zero))
+        _ <- IO.sleep(10.seconds)
+        _ <- schedule(Some(-5.seconds))
+        _ <- IO.sleep(60.seconds)
+        result <- fired.get
+      } yield expect.same(result, List(60.seconds))
     }
   }
 }
