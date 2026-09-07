@@ -5,6 +5,11 @@ and branch heads, not every open PR. The expanded audit below was performed afte
 the user identified recent development work. No upstream code was merged into this
 candidate and no public deployment was changed.
 
+Follow-up at 02:41:13 UTC: the same nine open PR heads and both base branch heads
+remained unchanged. The [follow-up record](evidence/mainnet-cadence/upstream-followup-check.json)
+preserves that check. V5 adds a local cadence anchor to the already-audited in-memory
+state path; it does not introduce a new configuration-file intersection or wire type.
+
 ## Overlap findings
 
 All nine open upstream PRs were enumerated through GitHub's API and their changed-file
@@ -58,7 +63,7 @@ released, or activated change.
 Following the proposed [ADR-0034](https://github.com/Constellation-Labs/tessellation/blob/b2c4e9f1b1b47c476b3c698b453af6adf03d3ab7/docs/adr/0034-consensus-schema-change-governance.md),
 this candidate is classified as **runtime-only**:
 
-- The two timestamps belong to the in-memory `ConsensusState` held in `MapRef`. That
+- The actual trigger timestamps and the v5 captured cadence anchor belong to the in-memory `ConsensusState` held in `MapRef`. That
   type has an equality derivation, not a wire codec; these fields are not signed
   snapshot/outcome fields or persisted sidecars.
 - No snapshot codec, canonical ordering, hash/signature preimage, state proof,

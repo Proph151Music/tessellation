@@ -222,7 +222,10 @@ object ConsensusManager {
                   consensusStorage
                     .tryUpdateLastConsensusOutcomeWithCleanup(previousKey, newOutcome)
                     .ifM(
-                      afterConsensusFinish(_trigger.get(newOutcome), newState.timeTriggerStartedAt),
+                      afterConsensusFinish(
+                        _trigger.get(newOutcome),
+                        newState.timeTriggerCadenceStartedAt.orElse(newState.timeTriggerStartedAt)
+                      ),
                       logger.info("Skip triggering another consensus")
                     ) >>
                   nodeStorage.tryModifyStateGetResult(WaitingForReady, Ready).void

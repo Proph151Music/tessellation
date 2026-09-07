@@ -62,6 +62,28 @@ object ConsensusTimeTriggerSuite extends SimpleIOSuite {
     IO.pure(expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 100.seconds, None), 143.seconds))
   }
 
+  test("a callback delayed by 35 seconds retains the intended cadence deadline") {
+    IO.pure(expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 102.seconds, Some(100.seconds), Some(65.seconds)), 130.seconds))
+  }
+
+  test("a future local deadline cannot postpone an earlier observed timed start") {
+    IO.pure(expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 102.seconds, Some(100.seconds), Some(120.seconds)), 165.seconds))
+  }
+
+  test("a retained deadline does not change disabled or bootstrap scheduling") {
+    IO.pure(
+      expect.same(ConsensusTimeTrigger.nextDeadline(legacy, 102.seconds, Some(100.seconds), Some(65.seconds)), 145.seconds) &&
+        expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 102.seconds, None, Some(65.seconds)), 145.seconds)
+    )
+  }
+
+  test("an overrun reanchors once instead of replaying the expired schedule") {
+    IO.pure(
+      expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 200.seconds, Some(100.seconds), Some(65.seconds)), 200.seconds) &&
+        expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 202.seconds, Some(200.seconds), Some(200.seconds)), 265.seconds)
+    )
+  }
+
   test("zero and negative periods are rejected") {
     List(Duration.Zero, -1.second).traverse { period =>
       IO(legacy.copy(timeTriggerPeriod = Some(period))).attempt.map(result => expect(result.isLeft))

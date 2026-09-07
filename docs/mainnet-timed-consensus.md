@@ -2,9 +2,11 @@
 
 Status: research candidate, disabled by default. Not a production deployment recommendation.
 
-Follow-up qualification is in progress: the [matched interruption test](mainnet-cadence-matched-comparison.md)
-checks a possible persistent post-pause timing regression that the earlier gates did
-not resolve. Do not treat the earlier passes as approval to merge or activate.
+The [matched interruption test](mainnet-cadence-matched-comparison.md) rejected the
+previously published v3 candidate and the local v4 attempt for persistent post-pause
+timing skew. Lifecycle-aware v5 passed the matched comparison and bounded mixed-version
+recovery check, with 569 unit tests passing. This qualifies the reproduced local
+regression, not the September Mainnet incident or production activation.
 The [September history report](mainnet-cadence-incident-evidence.md) separately measures
 the public-network slowdown without claiming its cause.
 
@@ -59,23 +61,33 @@ timed epoch advances. It is not a throughput target established by this investig
 
 ## How does the proposed change help?
 
-An optional `time-trigger-period` expresses a desired interval measured from the start
-of the previous completed timed round. The scheduler subtracts time already spent in
-consensus instead of always adding another full post-completion delay.
+An optional `time-trigger-period` expresses a desired start-to-start cadence. The
+scheduler subtracts time already spent in consensus instead of always adding another
+full post-completion delay. The deadline-retention revision also avoids carrying a
+late timer callback into every subsequent round.
 
 - Unset: retain the existing 43-second post-completion scheduling behavior.
-- Set: request the next timed round at the previous round's start plus the configured period.
+- Set: use the earlier of the retained local deadline and actual timed start, plus the configured period.
 - Overdue: request one next round, without manufacturing missed snapshots or replaying a backlog.
 - Bootstrap: retain the existing initial delay when there is no previous local round-start time.
 - Event-triggered rounds: retain the existing pending timed deadline and event scheduling rules.
 
-The start is the node's own timed trigger, or its first observation of a current
+The actual start is the node's own timed trigger, or its first observation of a current
 facilitator's timed trigger while that local round exists. It is **not** the time an
 idle observer allocated its round state. Otherwise, a node joining early could start
 its clock before consensus actually starts and repeatedly trigger unnecessary recovery.
 Local timestamps are recorded once; outsiders and later gossip cannot reset them.
 With the option enabled, the existing recovery timeout starts when an actual trigger
 is observed, rather than during idle observation. Disabled mode keeps legacy behavior.
+
+The retained deadline is captured in local round state **before facilities advancement
+clears the pending timer**, and is used only for scheduling. Reading the pending timer
+at completion was too late; that was the failed v4 attempt. For example, if a timer due at
+65 seconds starts late at 100 and the round finishes at 102, a 65-second cadence next
+targets 130, not 165. This does not backdate actual participation or recovery clocks.
+If the computed deadline is already past, one next round is requested and its deadline
+is reanchored to the present; missed epochs are not replayed. With no completed local
+timed start, bootstrap still waits the existing initial interval.
 
 The deadline uses the local monotonic clock. It is a request to the existing consensus
 process, not permission to finalize a snapshot. All normal acceptance checks still apply.
@@ -94,7 +106,7 @@ maintainers must approve any production cadence and its economic consequences.
 | 35 seconds | 78 seconds | 65 seconds |
 | 80 seconds | 123 seconds | 80 seconds; next round requested immediately |
 
-These are idealized scheduling calculations, not promised network throughput. The
+These calculations assume an on-time callback; they are not promised network throughput. The
 option can slow an already-fast network as well as reduce extra waiting on a slower
 one: the illustrative 65-second target breaks even with the existing scheduler at a
 22-second round duration. Long rounds can still delay the whole network. A continuously overloaded network
@@ -136,7 +148,8 @@ a public-network deployment.
 | --- | --- |
 | [ConsensusTimeTrigger](../modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/consensus/ConsensusTimeTrigger.scala) | Local trigger observation, deadline arithmetic, and stale-callback rejection |
 | [ConsensusManager](../modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/consensus/ConsensusManager.scala) | Rearm after accepted completion; start enabled recovery only after actual participation |
-| [ConsensusStateUpdater](../modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/consensus/ConsensusStateUpdater.scala) | Record local trigger metadata before the existing state-update sequence |
+| [ConsensusStateUpdater](../modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/consensus/ConsensusStateUpdater.scala) | Capture actual trigger times and cadence anchor before facilities clears the timer |
+| [ConsensusState](../modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/consensus/ConsensusState.scala) | Keep actual participation and cadence metadata separate in local round state |
 | [Global L0 state creator](../modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotConsensusStateCreator.scala) and [Currency L0 state creator](../modules/currency-l0/src/main/scala/io/constellationnetwork/currency/l0/snapshot/CurrencySnapshotConsensusStateCreator.scala) | Stamp a node's own trigger; keep an idle observer's clocks unset |
 | [Global L0 configuration](../modules/dag-l0/src/main/resources/dag-l0.conf) | Disabled-by-default environment override |
 

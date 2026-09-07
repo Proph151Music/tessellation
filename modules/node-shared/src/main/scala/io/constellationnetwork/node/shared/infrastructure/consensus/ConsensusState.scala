@@ -49,7 +49,8 @@ case class ConsensusState[Key, Status, Outcome, Kind](
   spreadAckKinds: Set[Kind],
   // Local scheduling metadata, not part of signed artifacts or consensus outcomes.
   triggerStartedAt: Option[FiniteDuration] = None,
-  timeTriggerStartedAt: Option[FiniteDuration] = None
+  timeTriggerStartedAt: Option[FiniteDuration] = None,
+  timeTriggerCadenceStartedAt: Option[FiniteDuration] = None
 )
 
 object ConsensusState {

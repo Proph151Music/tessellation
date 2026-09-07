@@ -1,0 +1,45 @@
+Lifecycle-aware cadence correction, 2026-09-07 UTC
+Behavior source commit: 44f2abcf7
+Explicit test-fixture types and native formatting: 94d065b2c
+
+Validation completed at 02:14:46 UTC, final process exit code 0.
+nodeShared/test: 303 passed, 0 failed, 0 errors
+dagL0/test: 93 passed, 0 failed, 0 errors, 2 existing ignored
+currencyL0/test: 41 passed, 0 failed, 0 errors
+shared/test: 132 passed, 0 failed, 0 errors
+Total: 569 passed, 0 failed, 2 ignored
+dagL0/assembly: passed
+nodeShared/scalafmtCheck: passed
+nodeShared/Test/scalafmtCheck: passed
+dagL0/scalafmtCheck: passed
+currencyL0/scalafmtCheck: passed
+git diff --check: passed
+
+Build history is intentionally not presented as an uninterrupted first-time pass:
+1. The initial command cleaned nodeShared, dagL0, and currencyL0 and compiled
+   production sources, but test compilation failed on new IO[Some]/IO[None]
+   fixtures where IO[Option[FiniteDuration]] was required.
+2. Fixture types were corrected explicitly. All four suites, assembly, and
+   formatting checks were rerun. No production behavior changed between attempts.
+   dagL0 and currencyL0 were still clean and compiled during the successful retry.
+3. Native formatting reordered test imports during the retry; that layout-only
+   change is retained in the repository.
+Existing dependency-version and unused-import warnings remain in the logs.
+
+Preserved JAR: evidence/mainnet-cadence/candidate-v5.jar
+JAR size: 107532866 bytes
+JAR SHA256: ca9090466b2476026a7113707f2dc0fde69c90895e65ddad6112b6be30b68720
+Initial failed log: evidence/mainnet-cadence/candidate-v5-clean-tests-build.log
+Initial log SHA256: 36fb9f33349ec17c799d3c789b6195fc5e07eb93e9cdc40111a096f299d5f3dc
+Successful retry log: evidence/mainnet-cadence/candidate-v5-tests-build-retry.log
+Retry log SHA256: d26c7dc091e7b98fc29d6059a669cd949d2fa29a3eb9312002534658b1c4a3e0
+
+Successful retry command:
+sbt -J-Xmx5G -J-XX:ActiveProcessorCount=6 \
+  'set ThisBuild / Test / javaOptions ++= Seq("-Xmx2G", "-XX:ActiveProcessorCount=4", "--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.security=ALL-UNNAMED", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED")' \
+  'nodeShared/test' 'dagL0/test' 'currencyL0/test' 'shared/test' 'dagL0/assembly' \
+  'nodeShared/scalafmtCheck' 'nodeShared/Test/scalafmtCheck' \
+  'dagL0/scalafmtCheck' 'currencyL0/scalafmtCheck'
+
+Native timing/recovery qualification is separate. These suite passes do not prove
+Mainnet incident causation, full Byzantine safety, or production rollout readiness.

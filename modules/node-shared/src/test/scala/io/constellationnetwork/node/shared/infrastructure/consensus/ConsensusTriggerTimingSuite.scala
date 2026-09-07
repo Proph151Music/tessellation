@@ -1,7 +1,8 @@
 package io.constellationnetwork.node.shared.infrastructure.consensus
 
-import cats.effect.IO
+import cats.effect.std.Supervisor
 import cats.effect.testkit.TestControl
+import cats.effect.{IO, Ref}
 import cats.syntax.all._
 
 import scala.concurrent.duration._
@@ -26,9 +27,15 @@ object ConsensusTriggerTimingSuite extends SimpleIOSuite {
 
   private def resources(sender: PeerId, trigger: Option[ConsensusTrigger]) =
     ConsensusResources.empty[IO, String, Unit].map { resources =>
-      resources.copy(peerDeclarationsMap = Map(sender -> PeerDeclarations.empty.copy(facility = Some(
-        Facility(Map.empty, Candidates(Set.empty), trigger, Hash.empty, SnapshotOrdinal.MinValue)
-      ))))
+      resources.copy(peerDeclarationsMap =
+        Map(
+          sender -> PeerDeclarations.empty.copy(facility =
+            Some(
+              Facility(Map.empty, Candidates(Set.empty), trigger, Hash.empty, SnapshotOrdinal.MinValue)
+            )
+          )
+        )
+      )
     }
 
   test("idle observation does not start the enabled stall clock; legacy mode retains its old behavior") {
@@ -37,9 +44,10 @@ object ConsensusTriggerTimingSuite extends SimpleIOSuite {
         r <- resources(peer, None)
         _ <- IO.sleep(60.seconds)
         observed <- ConsensusTimeTrigger.observeTriggers(idle, r)
-      } yield expect.same(observed, idle) &&
-        expect(!ConsensusTimeTrigger.shouldDetectStall(periodic, observed)) &&
-        expect(ConsensusTimeTrigger.shouldDetectStall(legacy, observed))
+      } yield
+        expect.same(observed, idle) &&
+          expect(!ConsensusTimeTrigger.shouldDetectStall(periodic, observed)) &&
+          expect(ConsensusTimeTrigger.shouldDetectStall(legacy, observed))
     }
   }
 
@@ -49,10 +57,11 @@ object ConsensusTriggerTimingSuite extends SimpleIOSuite {
         _ <- IO.sleep(60.seconds)
         r <- resources(peer, Some(TimeTrigger))
         observed <- ConsensusTimeTrigger.observeTriggers(idle, r)
-      } yield expect.same(observed.triggerStartedAt, Some(60.seconds)) &&
-        expect.same(observed.timeTriggerStartedAt, Some(60.seconds)) &&
-        expect(ConsensusTimeTrigger.shouldDetectStall(periodic, observed)) &&
-        expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 65.seconds, observed.timeTriggerStartedAt), 125.seconds)
+      } yield
+        expect.same(observed.triggerStartedAt, Some(60.seconds)) &&
+          expect.same(observed.timeTriggerStartedAt, Some(60.seconds)) &&
+          expect(ConsensusTimeTrigger.shouldDetectStall(periodic, observed)) &&
+          expect.same(ConsensusTimeTrigger.nextDeadline(periodic, 65.seconds, observed.timeTriggerStartedAt), 125.seconds)
     }
   }
 
@@ -83,8 +92,9 @@ object ConsensusTriggerTimingSuite extends SimpleIOSuite {
         first <- ConsensusTimeTrigger.observeTriggers(active, timed)
         _ <- IO.sleep(100.seconds)
         duplicate <- ConsensusTimeTrigger.observeTriggers(first, timed)
-      } yield expect.same(first.triggerStartedAt, Some(10.seconds)) &&
-        expect.same(first.timeTriggerStartedAt, Some(20.seconds)) && expect.same(first, duplicate)
+      } yield
+        expect.same(first.triggerStartedAt, Some(10.seconds)) &&
+          expect.same(first.timeTriggerStartedAt, Some(20.seconds)) && expect.same(first, duplicate)
     }
   }
 
@@ -106,6 +116,69 @@ object ConsensusTriggerTimingSuite extends SimpleIOSuite {
         r <- resources(peer, Some(TimeTrigger))
         observed <- ConsensusTimeTrigger.observeTriggers(own, r)
       } yield expect.same(observed, own)
+    }
+  }
+
+  test("the real next timer retains the round anchor after facilities clears the pending timer") {
+    TestControl.executeEmbed {
+      Supervisor[IO].use { implicit supervisor =>
+        for {
+          deadline <- Ref.of[IO, Option[FiniteDuration]](Some(65.seconds))
+          fired <- Ref.of[IO, List[FiniteDuration]](Nil)
+          _ <- IO.sleep(100.seconds)
+          r <- resources(peer, Some(TimeTrigger))
+          own = idle.copy(triggerStartedAt = Some(100.seconds), timeTriggerStartedAt = Some(100.seconds))
+          observed <- ConsensusTimeTrigger.observeTiming(own, r, deadline.get)
+          // Both native advancers clear this timer when facilities select TimeTrigger.
+          _ <- deadline.set(None)
+          afterClear <- ConsensusTimeTrigger.observeTiming(observed, r, deadline.get)
+          _ <- IO.sleep(2.seconds)
+          _ <- ConsensusTimeTrigger
+            .schedule[IO](periodic, afterClear.timeTriggerCadenceStartedAt, t => deadline.set(Some(t)), deadline.get)(
+              IO.monotonic.flatMap(t => fired.update(_ :+ t))
+            )
+          _ <- IO.sleep(27.seconds)
+          before <- fired.get
+          _ <- IO.sleep(2.seconds)
+          after <- fired.get
+        } yield
+          expect.same(observed.timeTriggerCadenceStartedAt, Some(65.seconds)) &&
+            expect.same(afterClear, observed) && expect.same(observed.triggerStartedAt, Some(100.seconds)) &&
+            expect.same(observed.timeTriggerStartedAt, Some(100.seconds)) && expect(before.isEmpty) && expect.same(after, List(130.seconds))
+      }
+    }
+  }
+
+  test("idle and outsider declarations cannot capture a cadence anchor from a pending timer") {
+    for {
+      quiet <- resources(peer, None)
+      foreign <- resources(outsider, Some(TimeTrigger))
+      a <- ConsensusTimeTrigger.observeTiming(idle, quiet, IO.pure(Option(65.seconds)))
+      b <- ConsensusTimeTrigger.observeTiming(idle, foreign, IO.pure(Option(65.seconds)))
+    } yield expect.same(a, idle) && expect.same(b, idle)
+  }
+
+  test("a bootstrap anchor cannot be reset by a later deadline or duplicate gossip") {
+    TestControl.executeEmbed {
+      for {
+        _ <- IO.sleep(100.seconds)
+        r <- resources(peer, Some(TimeTrigger))
+        observed <- ConsensusTimeTrigger.observeTiming(idle, r, IO.pure(Option.empty[FiniteDuration]))
+        _ <- IO.sleep(100.seconds)
+        older <- ConsensusTimeTrigger.observeTiming(observed, r, IO.pure(Option(65.seconds)))
+        newer <- ConsensusTimeTrigger.observeTiming(observed, r, IO.pure(Option(250.seconds)))
+      } yield
+        expect.same(observed.timeTriggerCadenceStartedAt, Some(100.seconds)) &&
+          expect.same(older, observed) && expect.same(newer, observed)
+    }
+  }
+
+  test("event-only participation does not consume the pending timed cadence anchor") {
+    resources(peer, Some(EventTrigger)).flatMap { r =>
+      ConsensusTimeTrigger.observeTiming(idle, r, IO.pure(Option(65.seconds)))
+    }.map { observed =>
+      expect(observed.triggerStartedAt.nonEmpty) && expect(observed.timeTriggerStartedAt.isEmpty) &&
+      expect(observed.timeTriggerCadenceStartedAt.isEmpty)
     }
   }
 }

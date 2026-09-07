@@ -39,8 +39,36 @@ private[consensus] object ConsensusTimeTrigger {
       }
   }
 
-  def nextDeadline(config: ConsensusConfig, now: FiniteDuration, previousTimedStart: Option[FiniteDuration]): FiniteDuration =
-    (config.timeTriggerPeriod, previousTimedStart)
+  private def cadenceStart(actualStart: Option[FiniteDuration], deadline: Option[FiniteDuration]): Option[FiniteDuration] =
+    actualStart.map(start => deadline.fold(start)(_.min(start)))
+
+  /** Capture before advancing facilities: a timed majority clears the pending timer in both GL0 and Currency L0. This anchor is local round
+    * metadata and survives that cancellation without keeping an obsolete callback live or backdating recovery timestamps.
+    */
+  def observeTiming[F[_]: Async, K, S, O, A, Kind](
+    state: ConsensusState[K, S, O, Kind],
+    resources: ConsensusResources[A, Kind],
+    getDeadline: F[Option[FiniteDuration]]
+  ): F[ConsensusState[K, S, O, Kind]] =
+    observeTriggers(state, resources).flatMap { observed =>
+      if (observed.timeTriggerCadenceStartedAt.nonEmpty || observed.timeTriggerStartedAt.isEmpty) observed.pure[F]
+      else
+        getDeadline.map { deadline =>
+          observed.copy(timeTriggerCadenceStartedAt = cadenceStart(observed.timeTriggerStartedAt, deadline))
+        }
+    }
+
+  def nextDeadline(
+    config: ConsensusConfig,
+    now: FiniteDuration,
+    previousTimedStart: Option[FiniteDuration],
+    previousDeadline: Option[FiniteDuration] = None
+  ): FiniteDuration =
+    // A delayed callback must not permanently move this node's cadence. The
+    // retained local deadline is scheduling evidence, not elapsed participation:
+    // keep the actual trigger timestamps used by recovery unchanged. Bootstrap
+    // has no completed timed start and must not reuse a leftover deadline.
+    (config.timeTriggerPeriod, cadenceStart(previousTimedStart, previousDeadline))
       .mapN(_ + _)
       .getOrElse(now + config.timeTriggerInterval)
       .max(now)

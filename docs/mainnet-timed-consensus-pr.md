@@ -1,137 +1,107 @@
-# Proposed PR: runtime-aware timed snapshot cadence
+# Proposed PR: lifecycle-safe timed consensus cadence
 
-**Hold for further qualification.** The [matched interruption comparison](mainnet-cadence-matched-comparison.md)
-is investigating a possible persistent timing regression after a node resumes.
-Earlier test passes do not resolve that concern. This prepared body is not an open
-upstream PR or a request to activate the candidate on Mainnet.
+Status: draft research change; matched timing and bounded mixed recovery checks passed. No upstream PR has
+been opened, and no public network has been changed.
 
-## What problem does this address?
+## Summary
 
-The legacy Global L0 timer waits 43 seconds **after a timed consensus round finishes**
-before requesting the next timed round. Consensus runtime is added to that wait.
-When participation or processing slows down, timed snapshots and their associated
-rewards become less frequent.
+This is an **opt-in scheduler improvement for the legacy Mainnet consensus engine**,
+not a confirmed repair of the September Mainnet incident. It remains disabled by
+default and is based on v3.5.30, targeting `release/mainnet`.
 
-We measured this on the published v3.5.30 artifact in an isolated five-validator
-network. An impaired round took 61.548 seconds on the genesis validator, and the
-next round started another 43.013 seconds later.
+The public-history investigation measured 1,281 timed epoch advances on September 1
+and 768 on September 6. That establishes a slowdown in explorer-indexed history,
+not its cause or per-validator reward amounts. Total snapshots and timed epochs
+are counted separately in the [incident evidence report](mainnet-cadence-incident-evidence.md).
 
-This is not an attribution of the reported September Mainnet slowdown. The v3.5.30
-release changed seedlist/allowlist data, not this scheduler, and the incident's phase
-and host/network evidence is still needed to establish its cause.
+## Problem
 
-## How does this change help?
+The legacy timer adds 43 seconds after a timed round finishes. Longer consensus
+therefore lengthens the interval between timed snapshots. The release's seedlist/
+allowlist edits did not introduce that scheduler policy.
 
-This proposal adds an **optional start-to-start period** for timed consensus:
+Our earlier start-relative candidate had a second problem: one delayed callback
+could permanently shift a node's schedule. A matched five-node experiment reproduced
+about 35 seconds of start-time skew in three consecutive rounds after the node
+resumed, while stock recovered to less than one second. Snapshot agreement and
+eventual progress still passed, so those checks alone were insufficient.
 
-- Unset: keep the existing post-completion delay.
-- Set: count time already spent in consensus toward the selected period.
-- Overdue: request one next round; do not manufacture missed epochs or replay a backlog.
-- Bootstrap: retain the existing initial delay when no local round-start time is available.
+## Change
 
-The implementation uses the monotonic clock and ignores callbacks for superseded or
-cleared deadlines. It records the actual local trigger or first current-facilitator
-trigger observation, not an idle observer's earlier state-allocation time. With the
-option enabled, idle observation does not prematurely start the existing recovery
-timeout. Disabled mode retains legacy recovery timing.
+An optional `time-trigger-period` counts consensus work toward the chosen cadence.
 
-It changes when a node requests consensus, not what evidence is
-required to finalize a snapshot.
+- Unset: preserve the existing finish-plus-43-second policy.
+- Enabled: use the earlier intended local deadline or actual timed start as the cadence anchor.
+- Capture the anchor in local round state **before facilities advancement clears the pending timer**.
+- Keep actual participation timestamps separate; do not backdate recovery clocks.
+- Keep timer cancellation, superseded-callback rejection, and bootstrap behavior.
+- If overdue, request one next round and reanchor; do not replay missed epochs.
 
-## Expected result and limits
-
-With an experimental 65-second period, a 35-second round leaves approximately
-30 seconds to wait, instead of another 43 seconds. This reduces the additional
-scheduling penalty when rounds are slow enough to benefit from that target.
-
-There are important limits:
-
-- Slow or unavailable facilitators can still delay consensus itself.
-- A 65-second target can slow an already-fast network; it is not a new production default.
-- Peers can initiate rounds too, so mixed settings do not enforce a single network-wide cadence.
-- Unchanged rewards per epoch do not imply unchanged rewards per day.
-
-No change is made to declaration barriers, signature verification, snapshot validity,
-finality, membership decisions, acknowledgment thresholds, or reward formulas. The
-existing 50-second declaration timeout and 10-second lock interval remain unchanged.
+The existing native timer-clearing operations remain intact. No peer-provided
+timestamp is trusted. The experimental 65-second setting is not a production default.
 
 ## Test evidence
 
-- Before production edits, stock declaration-barrier and acknowledgment tests passed.
-- Final clean-build counts: **561 passed, zero failed, two existing ignored tests** across
-  node-shared, Global L0, Currency L0, and shared code.
-- This includes 14 scheduling tests, seven trigger-observation tests, three declaration-barrier tests, and four
-  acknowledgment tests, including outsider rejection and the existing three-of-five recovery decision.
-- Global L0 assembly, scoped Scala formatting, and diff checks passed.
-- The published-artifact control reached five matching signers, recovered network
-  progress through the existing four-facilitator path during an impairment, and
-  showed no sampled same-ordinal value conflict.
-- The corrected all-candidate run passed: 152 samples, six cross-node ordinal
-  comparisons, no sampled conflict or healthy-window recovery locks, and all five
-  validators advancing after restoration. Its impaired round took 36.760 seconds,
-  followed by a 28.238-second wait (64.998 seconds start-to-start).
-- The two-stock/three-candidate campaign passed with a 130.492-second outage:
-  165 samples, eight cross-node ordinal comparisons, no sampled conflict or healthy
-  recovery lock, and all four unimpaired validators advancing through ordinal 13.
-  Both implementations exercised the existing lock/acknowledgment removal path.
-  A candidate overrun of 81.399 seconds left only 0.012 seconds before the next round.
+V3/V4/V5 below are local experiment labels, not public release versions.
 
-The first candidate is explicitly **rejected** in the report: it passed unit and
-sampled-agreement checks but caused repeated healthy recovery waits after late admission.
-The correction addresses that clock-origin bug, and the runtime gate now rejects
-healthy-window recovery locks and missing phase-log evidence. Failed results are retained.
+- **569 unit tests passed, zero failed, two existing ignored:** nodeShared 303,
+  dagL0 93, currencyL0 41, shared 132.
+- Coverage includes 18 scheduler tests, 11 trigger/cadence-observation tests,
+  declaration barriers, acknowledgment decisions, outsider exclusion, and existing
+  signature/hash/serialization checks.
+- A lifecycle regression captures a deadline, clears the pending timer as native
+  facilities advancement does, and checks the real next timer still fires on cadence.
+- Assembly, scoped Scala formatting, and diff checks passed.
+- The initial v5 test-fixture type-inference failure and successful retry are both
+  preserved in the [build record](evidence/mainnet-cadence/build-v5-summary.txt).
+- Stock's matched interruption control passed. V3 and v4 failed timing qualification
+  and remain explicitly rejected. Their artifacts and adverse evidence are preserved.
+- V5 passed the matched interruption: post-fault five-node start spreads returned to
+  0.419/0.426/0.421 seconds. All five ended Ready at ordinal 13, with no sampled
+  conflicts, signer violations, ordinal regressions, or recovery locks.
+- V5 passed the mixed 130.512-second outage check: 166 samples, no sampled conflicts
+  or pre-fault recovery locks, and all four unimpaired nodes advancing through
+  ordinal 13 after the existing lock/acknowledgment path removed the unavailable node.
+  The restored node did not rejoin within the window; full re-entry is not qualified.
 
-The corrected candidate still showed a 35.178-second round after restoration because
-the suspended node's local timer shifted later. This is not a complete phase-alignment
-or slow-facilitator fix. The shorter all-candidate pause did not reach lock recovery;
-the mixed scenario uses a longer outage specifically to cover that path.
-The restored validator did not rejoin within the mixed-run window; full re-entry is
-not claimed. A separate candidate-default native run and combined tests with the open
-withdrawal/configuration PRs have not been performed.
+The [matched comparison](mainnet-cadence-matched-comparison.md) provides exact fault
+alignment, per-round timings, artifact identities, and acceptance criteria. The
+[test report](mainnet-timed-consensus-tests.md) separates current and historical results.
 
-The test scripts, machine-readable checks, phase timings, setup failures, resource
-constraints, and limitations are documented in the accompanying report. Sampled
-snapshot agreement is not independent cryptographic proof verification or a formal
-Byzantine-safety proof. A single-host experiment is not a production load test.
+## Consensus safety and limitations
 
-## Deployment and review
+There is no change to declaration barriers, required signatures, snapshot validity,
+finality, membership reducers, acknowledgment thresholds, or reward formulas. The
+50-second declaration timeout and 10-second lock interval are unchanged.
 
-### Consensus compatibility
+Actual trigger times and the captured cadence anchor are in-memory `ConsensusState`
+metadata, not signed artifacts, persisted schemas, proofs, or hash preimages.
+Historical acceptance/replay functions and ordinal activation maps are unchanged.
+Future snapshot timing and rewards per day can change if the option is enabled.
 
-- [x] Runtime-only behavior; encodings/hash rules and historical replay are unchanged
+Sampled JSON-value agreement and signer-ID checks are not independent cryptographic
+verification or a Byzantine-safety proof. These single-host experiments do not prove
+production load capacity, full re-entry after removal, or safe rolling upgrades.
+A 65-second target can slow a network whose healthy rounds already finish faster.
+Slow participants can still delay consensus itself.
 
-The two trigger timestamps are in-memory `ConsensusState` metadata, held in `MapRef`,
-not signed artifacts or persisted sidecars. No codecs, hash/signature preimages, state
-proofs, acceptance/replay functions, ordinal maps, or golden wire/hash fixtures change.
-No protocol-format-driven external consumer rebuild is identified; Snapshot Streaming,
-Block Explorer, SDK, and metagraph end-to-end integration were not tested by this campaign.
-The option defaults to `None`/`null`; it uses monotonic time, not an ordinal activation
-boundary. Future snapshot timing and reward frequency can change when enabled.
+## Compatibility and upstream overlap
 
-### Upstream overlap
+The [upstream review](mainnet-timed-consensus-upstream-review.md) checked all nine open
+PRs, including #1592, #1593, #1596, and #1597. Configuration-file intersections affect
+separate fields. The non-mutating #1592 merge check was clean, but combined sources
+have not been built or tested. The development-cluster CI scheduling race is separate.
 
-All nine currently open upstream PRs were checked. #1597, #1593, #1592, and #1526
-share the configuration file but modify separate `FieldsAddedOrdinals` fields or
-resolvers. #1596 has no changed-file intersection. A non-mutating merge check against
-Mainnet #1592 is clean; the combined source has not been built or tested.
+`develop` uses the newer consensus architecture; it is not an interchangeable base
+for this legacy Mainnet patch. No SDK, explorer, streaming, or external metagraph
+E2E compatibility is claimed from this campaign.
 
-The already-merged development work #1566 and #1589 uses a newer consensus engine;
-any future port must preserve its post-commit vote ordering and timer-fiber lifecycle.
-This PR does not duplicate or repair the separate development-cluster CI scheduling
-race. #1597's passing E2E and failed Scala workflow are not test evidence for this PR.
+## Rollout
 
-### Rollout limits
+Do not deploy or activate from these research results. Maintainers must approve
+cadence and economic policy, production-size and event-heavy qualification, partition/
+overload testing, and supported upgrade procedures. The mixed test uses an explicit
+local version-hash override; it is not a production rolling-upgrade recommendation.
 
-This is a **draft, disabled-by-default cadence mitigation**. Production activation
-requires maintainer agreement on timing/economics and validation under production-size
-committees, event-heavy load, partitions, sustained overload, and supported upgrade
-procedures. The mixed-version devnet explicitly overrides the native version-equality
-hash for testing; that is not a production rolling-upgrade recommendation.
-
-The PR is based on v3.5.30 commit `9b1f826db65d56d1736a298fd18c842e0c93f5d6` and targets
-`release/mainnet`. `develop` uses the newer consensus architecture and was not the
-equivalent Mainnet base when this work was prepared. No public-network node was changed.
-
-- [Problem, implementation, configuration, and review map](https://github.com/Proph151Music/tessellation/blob/fix/mainnet-timed-consensus-cadence/docs/mainnet-timed-consensus.md)
-- [Test report, artifact identities, reproduction, and limitations](https://github.com/Proph151Music/tessellation/blob/fix/mainnet-timed-consensus-cadence/docs/mainnet-timed-consensus-tests.md)
-- [Upstream overlap and compatibility audit](https://github.com/Proph151Music/tessellation/blob/fix/mainnet-timed-consensus-cadence/docs/mainnet-timed-consensus-upstream-review.md)
+The Mainnet incident still requires time-aligned validator phase logs and host/network
+metrics. This proposal must not be presented as establishing or fixing that cause.

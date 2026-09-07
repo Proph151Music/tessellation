@@ -2,16 +2,35 @@
 
 Research dates: 2026-09-06–07 UTC. No public validator was joined, changed, or sent a transaction.
 
-**Qualification hold:** a [matched post-interruption comparison](mainnet-cadence-matched-comparison.md)
-is now testing whether the candidate retains a persistent phase offset after recovery.
-The earlier bounded passes below remain historical results, not acceptance of that risk.
+**Current result:** lifecycle-aware v5 passed the [matched post-interruption comparison](mainnet-cadence-matched-comparison.md)
+and bounded mixed-version long-outage recovery checks. V3 and v4 were rejected for
+persistent phase offsets after recovery. These results do not establish the Mainnet
+incident cause, full re-entry after removal, or production readiness.
 
-Result: **561 unit tests passed, zero failed, two existing tests ignored**. Published
-stock, corrected five-node candidate, and mixed-version long-outage campaigns passed
+Current v5 build: **569 passed, zero failed, two existing ignored**; assembly and
+scoped formatting passed. The [v5 build record](evidence/mainnet-cadence/build-v5-summary.txt)
+includes the initial fixture-compilation failure and successful retry. The native
+matched campaign passed: post-fault start spreads returned to 0.419/0.426/0.421 seconds,
+with all five nodes Ready and no sampled conflicts or recovery locks. Mixed-version
+long-outage qualification also passed: 166 samples, four existing-path recovery locks
+at ordinal 11, and all four unimpaired validators advancing through ordinal 13.
+The restored node did not rejoin within the window. See the matched comparison for
+current per-round data; the detailed v3 sections below are historical evidence.
+
+Rejected v4 build: **566 unit tests passed, zero failed, two existing tests ignored**;
+assembly and scoped formatting checks passed. The [v4 build record](evidence/mainnet-cadence/build-v4-summary.txt)
+records exact provenance and commands. Its native timing failure demonstrates why unit
+passes alone are insufficient. V4 was not advanced to mixed-version qualification.
+
+Earlier v3 result: **561 unit tests passed, zero failed, two existing tests ignored**. Published
+stock, v3 five-node candidate, and v3 mixed-version long-outage campaigns passed
 their stated gates. The first candidate was rejected. These are bounded regression
 results, not production approval or proof that slow-node consensus delays are eliminated.
 
 ## Source and artifact identity
+
+V1/V3/V4/V5 are local experiment labels, not Tessellation release numbers. Candidate
+JARs use `99.99.99-SNAPSHOT`; the published stock control is Mainnet v3.5.30.
 
 | Item | Identity |
 | --- | --- |
@@ -19,17 +38,23 @@ results, not production approval or proof that slow-node consensus delays are el
 | Proposed upstream base | `release/mainnet`, verified at that commit on the research date |
 | Published stock JAR | 107,511,671 bytes |
 | Stock JAR SHA256 | `9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d` |
-| Corrected candidate behavior commit, local | `9cd7ed151` |
+| Lifecycle-aware v5 source, local | `44f2abcf7`, with fixture/format revision `94d065b2c` |
+| Lifecycle-aware v5 JAR | 107,532,866 bytes |
+| Lifecycle-aware v5 SHA256 | `ca9090466b2476026a7113707f2dc0fde69c90895e65ddad6112b6be30b68720` |
+| Deadline-retention v4 behavior commit, local | `5462cb29f` |
+| Deadline-retention v4 JAR | 107,530,749 bytes |
+| Deadline-retention v4 SHA256 | `f4bf74d167c60520bbd8ade458f43b4a5e4ea912bdcaef92b116f7620d7e91b0` |
+| Rejected v3 behavior commit, local | `9cd7ed151` |
 | Published equivalent behavior commit | `6cecca592c7c70a3fb4ca5500fb887313d77ba63`; source tree verified identical |
-| Corrected candidate JAR | 107,530,028 bytes, version `99.99.99-SNAPSHOT` |
-| Corrected candidate SHA256 | `52c064abbeb3858d73230601f8f92561d92757099e488b7777011669177912bd` |
+| Rejected v3 JAR | 107,530,028 bytes, version `99.99.99-SNAPSHOT` |
+| Rejected v3 SHA256 | `52c064abbeb3858d73230601f8f92561d92757099e488b7777011669177912bd` |
 | Rejected v1 behavior commit, local | `102cc2301`; replaced by the trigger-observation correction described below |
 | Rejected v1 JAR | 107,522,885 bytes, SHA256 `e710b8131764cc170ee46a049ce11d4f0dc76977a972ae9d13d35939223c5461` |
 | Cached test image | `constellationnetwork/tessellation:test`, image ID `sha256:eb716b08291d5e4bf25578dc9d3078982e7d061cb8edebcea28cf4f3a2d30364` |
 
 The published artifact is not assumed to identify every deployed Mainnet node.
-The rejected artifact is retained for audit, not offered as the corrected candidate.
-The corrected artifact was built from the working tree committed as `9cd7ed151`;
+All rejected artifacts are retained for audit, not offered as accepted candidates.
+The v3 artifact was built from the working tree committed as `9cd7ed151`;
 its embedded Git build metadata can reference the preceding HEAD because the commit
 was made after clean tests and assembly. The source tree, artifact hash, and build log
 are recorded separately rather than treating the version string as artifact identity.
@@ -69,9 +94,9 @@ A longer gap on the deliberately paused node is retained in the raw phase record
 Healthy five-node rounds were around two seconds on this host. This does not reproduce
 the reported Mainnet runtime or establish its incident cause.
 
-## Unit/build validation
+## Historical v3 unit/build validation
 
-The corrected candidate's native results are recorded separately below; suite success
+The v3 candidate's native results are recorded separately below; suite success
 alone was not used to accept it.
 
 Before production changes, three new declaration-barrier tests and two existing
@@ -81,14 +106,14 @@ cannot substitute for that participant.
 
 | Check | Result |
 | --- | --- |
-| `nodeShared/test`, clean corrected build | 295 passed |
+| `nodeShared/test`, clean v3 build | 295 passed |
 | `dagL0/test` | 93 passed; two existing nondeterministic data-generation tests ignored |
 | `currencyL0/test` | 41 passed |
 | `shared/test` | 132 passed, including signed-object validation and serialization/hash compatibility |
 | `dagL0/assembly` | Passed |
 | Scoped Scala formatting and `git diff --check` | Passed |
 
-The corrected suite counts total **561 passed, zero failed, two ignored**. Node-shared
+The v3 suite counts total **561 passed, zero failed, two ignored**. Node-shared
 includes 14 scheduling tests, seven trigger-observation tests, three declaration-barrier
 tests, and four acknowledgment tests. Earlier run totals are not counted twice.
 
@@ -123,9 +148,9 @@ timeout durations and acknowledgment rules. Disabled mode retains legacy recover
 The report now rejects healthy-window recovery locks, even when sampled agreement
 and eventual progress pass. The rejected artifact fails that stronger gate; stock passes.
 
-## Corrected candidate: completed five-node campaign
+## Historical v3 five-node campaign, before matched rejection
 
-`candidate-run-02` used the corrected JAR, a 65-second period, and a 300-second
+`candidate-run-02` used the v3 JAR, a 65-second period, and a 300-second
 measurement window. All five nodes matched ordinal 7 with five distinct local signers.
 The completed campaign passed the automated report:
 
@@ -155,7 +180,7 @@ the reported median. This campaign and stock are not phase-aligned throughput A/
 
 ## Mixed-version recovery: completed long-outage campaign
 
-`mixed-run-01` cold-started two stock nodes (0–1) and three corrected nodes (2–4),
+`mixed-run-01` cold-started two stock nodes (0–1) and three v3 nodes (2–4),
 using the artifact hashes above. Candidate nodes used the 65-second period; stock
 nodes retained the 43-second post-completion interval. The isolated version-equality
 override was explicit. Measurement lasted 420 seconds; node 4's actual pause lasted
@@ -253,8 +278,9 @@ counts and retained in the local experiment log.
 
 Snapshot value comparisons use a canonicalized JSON digest, not the protocol hash,
 and signer-ID checks are not independent signature verification. Tip sampling can miss
-intermediate snapshots or transient forks. Fault injection is wall-time based, not
-phase-aligned; the runs cannot establish a causal throughput percentage improvement.
+intermediate snapshots or transient forks. Earlier campaigns and mixed-version tests
+use wall-time fault injection; the newer homogeneous comparison is phase-aligned.
+Neither design establishes a production throughput percentage improvement.
 
 The candidate leaves declaration, signature, validation, finality, and membership
 decision code unchanged. That narrow scope plus passing tests is regression evidence,
@@ -263,7 +289,7 @@ committees, event-heavy scheduling, complete re-entry, and production upgrade pr
 remain release gates. The cadence option stays disabled by default and requires separate
 economic/operational approval before activation.
 
-There was no separate five-node run of the corrected binary with the option unset;
+There was no separate five-node run of a candidate binary with the option unset;
 default compatibility is covered by configuration/timer tests and the unchanged
 legacy policy branch, not by an additional native campaign. No combined build with
 the open withdrawal/configuration PRs was tested. See the

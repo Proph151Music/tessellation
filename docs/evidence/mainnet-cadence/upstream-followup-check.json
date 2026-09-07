@@ -1,0 +1,66 @@
+{
+  "checked_at_utc": "2026-09-07T02:41:13Z",
+  "source": "https://api.github.com/repos/Constellation-Labs/tessellation/pulls?state=open&per_page=100",
+  "branches": {
+    "develop": "65b3667d414760763fe342e720a9486d2c0beb82",
+    "release/mainnet": "9b1f826db65d56d1736a298fd18c842e0c93f5d6"
+  },
+  "open_pull_requests": [
+    {
+      "number": 1597,
+      "title": "fix(config): align ordinal defaults and repository guidance",
+      "head": "b2c4e9f1b1b47c476b3c698b453af6adf03d3ab7",
+      "base": "develop"
+    },
+    {
+      "number": 1596,
+      "title": "fix(dag-l0): harden downloaded snapshot head handoff",
+      "head": "0431a5d35fa0c9b4d46415a63ff53a3832697d29",
+      "base": "develop"
+    },
+    {
+      "number": 1595,
+      "title": "test(e2e): cover delegated withdrawal replacement race",
+      "head": "a787b14c06659f8df95193d99a1ffad8c590676c",
+      "base": "fix/mainnet-delegated-withdrawal-safety"
+    },
+    {
+      "number": 1594,
+      "title": "fix(node-shared): validate fee transactions individually and apply the ones that pass",
+      "head": "81fec15a02bc75783a4e00ad9a40fdca812236fc",
+      "base": "develop"
+    },
+    {
+      "number": 1593,
+      "title": "fix(dag-l0): harden delegated stake withdrawal settlement",
+      "head": "2b4f826c0827b438748bf403653d63f77f0d517c",
+      "base": "develop"
+    },
+    {
+      "number": 1592,
+      "title": "fix(dag-l0): harden delegated stake withdrawal processing",
+      "head": "c734a03132f280aa58d63c601c749a390d99ac7b",
+      "base": "release/mainnet"
+    },
+    {
+      "number": 1591,
+      "title": "chore(deps-dev): bump fast-uri from 3.1.5 to 3.1.7",
+      "head": "3b99fe5f5b74c69610360a9bc82934858c9a980e",
+      "base": "develop"
+    },
+    {
+      "number": 1538,
+      "title": "feat: fee transaction lookup in L0NodeContext",
+      "head": "44cadb0638d0080616c11cd081d2e7b98f653cf6",
+      "base": "develop"
+    },
+    {
+      "number": 1526,
+      "title": "Feat/l0 burn transaction",
+      "head": "de08653be62d5cde164dc1812da20ee0c7ab8945",
+      "base": "develop"
+    }
+  ],
+  "assessment": "The same nine open PR heads and both base heads remain unchanged from the full earlier overlap audit.",
+  "limitations": "This head check does not qualify combined PR sources, public deployments, or all CI status changes."
+}

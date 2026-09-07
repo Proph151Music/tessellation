@@ -1,0 +1,37 @@
+Deadline-retention correction, 2026-09-07 UTC
+Production behavior source commit: 5462cb29f
+Correction scope: ConsensusTimeTrigger.scala only; five new scheduling tests.
+
+Clean validation completed at 01:40:29 UTC, process exit code 0.
+nodeShared/test: 300 passed, 0 failed, 0 errors
+dagL0/test: 93 passed, 0 failed, 0 errors, 2 existing ignored
+currencyL0/test: 41 passed, 0 failed, 0 errors
+shared/test: 132 passed, 0 failed, 0 errors
+Total: 566 passed, 0 failed, 2 ignored
+dagL0/assembly: passed
+nodeShared/scalafmtCheck: passed
+nodeShared/Test/scalafmtCheck: passed
+dagL0/scalafmtCheck: passed
+currencyL0/scalafmtCheck: passed
+git diff --check: passed
+
+The native build autoformatted the existing ConsensusTriggerTimingSuite.scala.
+Only whitespace/layout changed; that formatting is retained separately from behavior.
+Existing dependency-version and unused-import warnings remain in the full build log.
+
+Preserved JAR: evidence/mainnet-cadence/candidate-v4.jar
+JAR size: 107530749 bytes
+JAR SHA256: f4bf74d167c60520bbd8ade458f43b4a5e4ea912bdcaef92b116f7620d7e91b0
+Full log: evidence/mainnet-cadence/candidate-v4-clean-tests-build.log
+Log SHA256: ac1cb19eb9ec07a23d8f5d37eceb94cc4581163fad68637f98c674fbde05a3f3
+
+Command (same resource limits and module-opening options as prior clean validation):
+sbt -J-Xmx5G -J-XX:ActiveProcessorCount=6 \
+  'set ThisBuild / Test / javaOptions ++= Seq("-Xmx2G", "-XX:ActiveProcessorCount=4", "--add-opens=java.base/java.util=ALL-UNNAMED", "--add-opens=java.base/java.security=ALL-UNNAMED", "--add-opens=java.base/java.lang.invoke=ALL-UNNAMED")' \
+  'nodeShared/clean' 'dagL0/clean' 'currencyL0/clean' \
+  'nodeShared/test' 'dagL0/test' 'currencyL0/test' 'shared/test' 'dagL0/assembly' \
+  'nodeShared/scalafmtCheck' 'nodeShared/Test/scalafmtCheck' \
+  'dagL0/scalafmtCheck' 'currencyL0/scalafmtCheck'
+
+This does not substitute for native timing/recovery qualification, independent
+cryptographic verification, Mainnet incident attribution, or production approval.

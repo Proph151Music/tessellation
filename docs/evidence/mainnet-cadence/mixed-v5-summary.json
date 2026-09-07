@@ -1,0 +1,103 @@
+{
+  "run": "/srv/projects/tw-devnet/evidence/mainnet-cadence/mixed-v5-01",
+  "completed": true,
+  "samples": 166,
+  "observed_ordinals": 13,
+  "ordinals_compared_across_nodes": 8,
+  "same_ordinal_value_conflicts": {},
+  "nonlocal_or_duplicate_signers": [],
+  "ordinal_regressions": [],
+  "recovery_locks": [
+    {
+      "node": "mc-mixed-1788748299-3",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788748964.883
+    },
+    {
+      "node": "mc-mixed-1788748299-1",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788748965.42
+    },
+    {
+      "node": "mc-mixed-1788748299-2",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788748985.846
+    },
+    {
+      "node": "mc-mixed-1788748299-0",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788748965.667
+    }
+  ],
+  "healthy_recovery_locks": [],
+  "matched_phase_fault": null,
+  "progress_after_restore": [
+    {
+      "node": 0,
+      "advanced": true
+    },
+    {
+      "node": 1,
+      "advanced": true
+    },
+    {
+      "node": 2,
+      "advanced": true
+    },
+    {
+      "node": 3,
+      "advanced": true
+    },
+    {
+      "node": 4,
+      "advanced": false
+    }
+  ],
+  "final_node_states": null,
+  "final_api_availability": [
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "node_ranges": [
+    {
+      "node": 0,
+      "first": 1,
+      "last": 13
+    },
+    {
+      "node": 1,
+      "first": 6,
+      "last": 13
+    },
+    {
+      "node": 2,
+      "first": 6,
+      "last": 13
+    },
+    {
+      "node": 3,
+      "first": 7,
+      "last": 13
+    },
+    {
+      "node": 4,
+      "first": 7,
+      "last": 10
+    }
+  ],
+  "complete_phase_records": 39,
+  "nodes_with_complete_phase_records": 5,
+  "median_round_seconds": 22.411,
+  "limitations": [
+    "Sampled values are JSON digests, not protocol hashes or independent signature verification.",
+    "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
+    "Fault injection is wall-time based, not phase-aligned; do not infer causal throughput gains from it."
+  ]
+}

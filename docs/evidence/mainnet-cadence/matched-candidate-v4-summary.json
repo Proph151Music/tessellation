@@ -1,7 +1,7 @@
 {
-  "run": "/srv/projects/tw-devnet/evidence/mainnet-cadence/matched-stock-01",
+  "run": "/srv/projects/tw-devnet/evidence/mainnet-cadence/matched-candidate-v4-01",
   "completed": true,
-  "samples": 137,
+  "samples": 193,
   "observed_ordinals": 13,
   "ordinals_compared_across_nodes": 8,
   "same_ordinal_value_conflicts": {},
@@ -14,58 +14,58 @@
     "fault_ordinal": 10,
     "alignment": {
       "kind": "phase_fault_validated",
-      "time": 1788743131.3419776,
+      "time": 1788745981.2154999,
       "ordinal": 10,
-      "actual_lead_seconds": 1.9366357326507568,
-      "actual_active_hold_seconds": 35.128204107284546
+      "actual_lead_seconds": 1.9275319576263428,
+      "actual_active_hold_seconds": 35.10433006286621
     },
     "per_round": [
       {
         "ordinal": 8,
         "window": "before",
-        "start_spread_seconds": 0.221,
-        "finish_spread_seconds": 0.218,
-        "max_round_seconds": 2.14
+        "start_spread_seconds": 0.414,
+        "finish_spread_seconds": 0.361,
+        "max_round_seconds": 2.549
       },
       {
         "ordinal": 9,
         "window": "before",
-        "start_spread_seconds": 0.215,
-        "finish_spread_seconds": 0.223,
-        "max_round_seconds": 1.741
+        "start_spread_seconds": 0.411,
+        "finish_spread_seconds": 0.289,
+        "max_round_seconds": 2.01
       },
       {
         "ordinal": 10,
         "window": "fault",
-        "start_spread_seconds": 35.315,
-        "finish_spread_seconds": 0.117,
-        "max_round_seconds": 36.881
+        "start_spread_seconds": 35.108,
+        "finish_spread_seconds": 0.341,
+        "max_round_seconds": 36.854
       },
       {
         "ordinal": 11,
         "window": "after",
-        "start_spread_seconds": 0.122,
-        "finish_spread_seconds": 0.642,
-        "max_round_seconds": 2.543
+        "start_spread_seconds": 35.121,
+        "finish_spread_seconds": 0.344,
+        "max_round_seconds": 36.743
       },
       {
         "ordinal": 12,
         "window": "after",
-        "start_spread_seconds": 0.641,
-        "finish_spread_seconds": 0.189,
-        "max_round_seconds": 2.568
+        "start_spread_seconds": 35.119,
+        "finish_spread_seconds": 0.398,
+        "max_round_seconds": 36.66
       },
       {
         "ordinal": 13,
         "window": "after",
-        "start_spread_seconds": 0.193,
-        "finish_spread_seconds": 0.399,
-        "max_round_seconds": 2.531
+        "start_spread_seconds": 35.122,
+        "finish_spread_seconds": 0.131,
+        "max_round_seconds": 37.073
       }
     ],
-    "start_spread_threshold_seconds": 5.221,
-    "persistent_post_fault_start_skew": false,
-    "timing_gate_passed": true
+    "start_spread_threshold_seconds": 5.414,
+    "persistent_post_fault_start_skew": true,
+    "timing_gate_passed": false
   },
   "progress_after_restore": [
     {
@@ -132,7 +132,7 @@
   ],
   "complete_phase_records": 42,
   "nodes_with_complete_phase_records": 5,
-  "median_round_seconds": 2.1075,
+  "median_round_seconds": 2.482,
   "limitations": [
     "Sampled values are JSON digests, not protocol hashes or independent signature verification.",
     "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
