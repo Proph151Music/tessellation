@@ -1,5 +1,10 @@
 # Proposed PR: runtime-aware timed snapshot cadence
 
+**Hold for further qualification.** The [matched interruption comparison](mainnet-cadence-matched-comparison.md)
+is investigating a possible persistent timing regression after a node resumes.
+Earlier test passes do not resolve that concern. This prepared body is not an open
+upstream PR or a request to activate the candidate on Mainnet.
+
 ## What problem does this address?
 
 The legacy Global L0 timer waits 43 seconds **after a timed consensus round finishes**

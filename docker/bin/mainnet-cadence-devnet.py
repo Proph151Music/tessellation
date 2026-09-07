@@ -7,8 +7,11 @@ import json
 import pathlib
 import re
 import subprocess
+import threading
 import time
 import urllib.request
+
+from mainnet_cadence_phase_fault import PhaseFaultController
 
 
 def run(*args):
@@ -25,6 +28,10 @@ def main():
     parser.add_argument("--seconds", type=int, default=300)
     parser.add_argument("--pause-seconds", type=int, default=75,
                         help="Fault duration target; actual timestamps include sampling/controller overhead")
+    parser.add_argument("--phase-aligned", action="store_true",
+                        help="Restore pause-seconds after reference facilities start; seconds is a maximum window")
+    parser.add_argument("--healthy-rounds", type=int, default=2)
+    parser.add_argument("--post-fault-rounds", type=int, default=3)
     args = parser.parse_args()
     if args.pause_seconds <= 0 or args.pause_seconds >= args.seconds / 2:
         parser.error("--pause-seconds must be positive and shorter than half the measurement window")
@@ -32,6 +39,15 @@ def main():
         parser.error("--stock-jar is required for mixed mode")
     if args.mode == "stock" and args.period:
         parser.error("the stock binary does not implement --period")
+    phase_period = None
+    if args.phase_aligned:
+        if args.mode == "mixed" or args.healthy_rounds < 1 or args.post_fault_rounds < 3:
+            parser.error("phase-aligned comparison requires homogeneous nodes, warm-up, and at least three post-fault rounds")
+        if args.period:
+            parsed = re.fullmatch(r"([0-9]+(?:\.[0-9]+)?) seconds?", args.period)
+            if not parsed or float(parsed[1]) <= 0:
+                parser.error("phase-aligned --period must be a positive duration expressed in seconds")
+            phase_period = float(parsed[1])
     out = pathlib.Path(args.output).resolve()
     out.mkdir(parents=True, exist_ok=False)
     jar = pathlib.Path(args.jar).resolve()
@@ -45,12 +61,16 @@ def main():
     samples = []
     local_http = urllib.request.build_opener(urllib.request.ProxyHandler({}))
     fetch_errors = {}
+    event_lock = threading.Lock()
+    phase_controller = None
+    phase_thread = None
 
     def event(kind, **values):
         record = dict(kind=kind, time=time.time(), **values)
-        events.append(record)
-        print(json.dumps(record), flush=True)
-        (out / "events.json").write_text(json.dumps(events, indent=2))
+        with event_lock:
+            events.append(record)
+            print(json.dumps(record), flush=True)
+            (out / "events.json").write_text(json.dumps(events, indent=2))
 
     def fetch(i, path):
         try:
@@ -70,6 +90,10 @@ def main():
         with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
             tips = list(pool.map(lambda i: fetch(i, "global-snapshots/latest"), range(5)))
         row = {"time": time.time(), "tips": [], "fetch_errors": dict(fetch_errors)}
+        if args.phase_aligned:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as pool:
+                states = list(pool.map(lambda i: fetch(i, "node/info"), range(5)))
+            row["node_states"] = [state.get("state") if state else None for state in states]
         for i, tip in enumerate(tips):
             if tip is None:
                 row["tips"].append(None)
@@ -165,32 +189,54 @@ def main():
                 if info and info["state"] == "ReadyToJoin":
                     join(i)
             row = sample()
-            if all(t and len(t["signers"]) == 5 for t in row["tips"]):
+            if (all(t and len(t["signers"]) == 5 for t in row["tips"])
+                    and len({(t["ordinal"], t["digest"]) for t in row["tips"]}) == 1):
                 break
             time.sleep(5)
         else:
             raise RuntimeError("five facilitators did not converge within 600s")
         event("five_ready", tips=row["tips"])
+        if args.phase_aligned:
+            phase_controller = PhaseFaultController(run, names[0], names[4], event,
+                                                    row["tips"][0]["ordinal"] + args.healthy_rounds,
+                                                    phase_period, hold_seconds=args.pause_seconds)
+            phase_thread = threading.Thread(target=phase_controller.run, daemon=True)
+            phase_thread.start()
         start_measure = time.monotonic()
         impaired = False
         restored = False
         while time.monotonic() - start_measure < args.seconds:
             elapsed = time.monotonic() - start_measure
-            if elapsed >= args.seconds / 2 and not impaired:
+            if not args.phase_aligned and elapsed >= args.seconds / 2 and not impaired:
                 run("docker", "pause", names[4])
                 event("paused", node=4)
                 impaired = True
-            if elapsed >= args.seconds / 2 + args.pause_seconds and not restored:
+            if not args.phase_aligned and elapsed >= args.seconds / 2 + args.pause_seconds and not restored:
                 run("docker", "unpause", names[4])
                 event("restored", node=4)
                 restored = True
-            sample()
+            row = sample()
+            if phase_controller:
+                if phase_controller.failure:
+                    raise RuntimeError(phase_controller.failure)
+                if (phase_controller.finished.is_set()
+                        and all(t and t["ordinal"] >= phase_controller.fault_ordinal + args.post_fault_rounds
+                                and len(t["signers"]) == 5 for t in row["tips"])
+                        and len({(t["ordinal"], t["digest"]) for t in row["tips"]}) == 1):
+                    event("post_fault_rounds_observed", count=args.post_fault_rounds,
+                          fault_ordinal=phase_controller.fault_ordinal, tips=row["tips"])
+                    break
             if int(elapsed) % 30 < 5:
                 with (out / "resources.log").open("a") as f:
                     f.write(run("free", "-h") + "\n" + run("docker", "stats", "--no-stream", *containers) + "\n")
             time.sleep(3)
+        if phase_controller and not any(e["kind"] == "post_fault_rounds_observed" for e in events):
+            raise RuntimeError("phase-aligned observation did not reach its post-fault gate")
         event("completed")
     finally:
+        if phase_controller:
+            phase_controller.stop.set()
+            phase_thread.join(timeout=10)
         for name in containers:
             subprocess.run(["docker", "unpause", name], capture_output=True)
             subprocess.run(["docker", "stop", "-t", "10", name], capture_output=True)

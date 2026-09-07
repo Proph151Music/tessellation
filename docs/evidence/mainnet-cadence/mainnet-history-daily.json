@@ -1,0 +1,83 @@
+{
+  "source": "https://be-mainnet.constellationnetwork.io/global-snapshots/",
+  "start": "2026-08-28",
+  "end_exclusive": "2026-09-07",
+  "requests": 186,
+  "daily": [
+    {
+      "date": "2026-08-28",
+      "total_snapshots": 5298,
+      "timed_epoch_advances": 1195,
+      "other_snapshots": 4103,
+      "seconds_per_epoch": 72.301
+    },
+    {
+      "date": "2026-08-29",
+      "total_snapshots": 5671,
+      "timed_epoch_advances": 1228,
+      "other_snapshots": 4443,
+      "seconds_per_epoch": 70.358
+    },
+    {
+      "date": "2026-08-30",
+      "total_snapshots": 5895,
+      "timed_epoch_advances": 1242,
+      "other_snapshots": 4653,
+      "seconds_per_epoch": 69.565
+    },
+    {
+      "date": "2026-08-31",
+      "total_snapshots": 6087,
+      "timed_epoch_advances": 1299,
+      "other_snapshots": 4788,
+      "seconds_per_epoch": 66.513
+    },
+    {
+      "date": "2026-09-01",
+      "total_snapshots": 6060,
+      "timed_epoch_advances": 1281,
+      "other_snapshots": 4779,
+      "seconds_per_epoch": 67.447
+    },
+    {
+      "date": "2026-09-02",
+      "total_snapshots": 5518,
+      "timed_epoch_advances": 1157,
+      "other_snapshots": 4361,
+      "seconds_per_epoch": 74.676
+    },
+    {
+      "date": "2026-09-03",
+      "total_snapshots": 5904,
+      "timed_epoch_advances": 1255,
+      "other_snapshots": 4649,
+      "seconds_per_epoch": 68.845
+    },
+    {
+      "date": "2026-09-04",
+      "total_snapshots": 4178,
+      "timed_epoch_advances": 992,
+      "other_snapshots": 3186,
+      "seconds_per_epoch": 87.097
+    },
+    {
+      "date": "2026-09-05",
+      "total_snapshots": 2487,
+      "timed_epoch_advances": 805,
+      "other_snapshots": 1682,
+      "seconds_per_epoch": 107.329
+    },
+    {
+      "date": "2026-09-06",
+      "total_snapshots": 2438,
+      "timed_epoch_advances": 768,
+      "other_snapshots": 1670,
+      "seconds_per_epoch": 112.5
+    }
+  ],
+  "limitations": [
+    "Dates use off-network explorer timestamps, not signed consensus phase timestamps.",
+    "Boundary neighbors were checked, not every snapshot in each day.",
+    "Epoch advances are not per-validator reward amounts or proof of incident causation."
+  ]
+}

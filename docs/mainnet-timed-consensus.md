@@ -2,6 +2,12 @@
 
 Status: research candidate, disabled by default. Not a production deployment recommendation.
 
+Follow-up qualification is in progress: the [matched interruption test](mainnet-cadence-matched-comparison.md)
+checks a possible persistent post-pause timing regression that the earlier gates did
+not resolve. Do not treat the earlier passes as approval to merge or activate.
+The [September history report](mainnet-cadence-incident-evidence.md) separately measures
+the public-network slowdown without claiming its cause.
+
 See the [test report](mainnet-timed-consensus-tests.md) for completed checks and limitations.
 The [upstream overlap review](mainnet-timed-consensus-upstream-review.md) covers recent
 PRs, the separate nightly CI race, and the proposed consensus-compatibility checklist.

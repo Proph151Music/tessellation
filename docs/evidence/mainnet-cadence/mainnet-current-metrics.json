@@ -1,0 +1,21 @@
+{
+  "retrieved_at_utc": "2026-09-07T01:14:49Z",
+  "url": "https://l0-lb-mainnet.constellationnetwork.io/metrics",
+  "selected_samples": [
+    "jvm_gc_overhead_percent{application=\"dag-l0\"} 0.019453333333333333",
+    "dag_consensus_duration_seconds_max{application=\"dag-l0\"} 40.819805141",
+    "dag_consensus_duration_seconds_count{application=\"dag-l0\"} 563.0",
+    "dag_consensus_duration_seconds_sum{application=\"dag-l0\"} 22093.972251976",
+    "process_cpu_usage{application=\"dag-l0\"} 0.3727904955085482",
+    "process_start_time_seconds{application=\"dag-l0\"} 1.788721233487E9",
+    "system_cpu_usage{application=\"dag-l0\"} 0.40257027701496223",
+    "process_uptime_seconds{application=\"dag-l0\"} 22455.618"
+  ],
+  "calculated_all_round_mean_seconds": 39.24328996798579,
+  "limitations": [
+    "One load-balanced response; not a proven fixed validator identity or fleet-wide measurement.",
+    "Counters include completed event and timed rounds and have no ordinal or phase labels.",
+    "CPU and GC gauges are point-in-time observations, not historical incident measurements.",
+    "The max gauge is not assumed to be an all-time maximum."
+  ]
+}

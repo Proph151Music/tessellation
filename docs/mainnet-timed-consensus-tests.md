@@ -2,6 +2,10 @@
 
 Research dates: 2026-09-06–07 UTC. No public validator was joined, changed, or sent a transaction.
 
+**Qualification hold:** a [matched post-interruption comparison](mainnet-cadence-matched-comparison.md)
+is now testing whether the candidate retains a persistent phase offset after recovery.
+The earlier bounded passes below remain historical results, not acceptance of that risk.
+
 Result: **561 unit tests passed, zero failed, two existing tests ignored**. Published
 stock, corrected five-node candidate, and mixed-version long-outage campaigns passed
 their stated gates. The first candidate was rejected. These are bounded regression

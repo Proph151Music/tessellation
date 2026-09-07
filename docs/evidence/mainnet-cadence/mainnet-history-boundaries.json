@@ -1,0 +1,189 @@
+[
+  {
+    "utc_boundary": "2026-08-28T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6834627,
+      "epochProgress": 2859215,
+      "timestamp": "2026-08-27T23:59:59.689Z",
+      "hash": "57d8f3145c5b20d5942362ff028aee2ff45851a48c74437767311dda51b42af0",
+      "lastSnapshotHash": "bcc9970d7b0394f5d3b3c78d92e03eb532c19ba3d5cfbc53ee7212b6255e78ed"
+    },
+    "first_at_or_after": {
+      "ordinal": 6834628,
+      "epochProgress": 2859215,
+      "timestamp": "2026-08-28T00:00:12.905Z",
+      "hash": "9d1458e1eec53bdb7bd368aa8d8a96f0d1c59af51b81aa732a4cdaff5840a46f",
+      "lastSnapshotHash": "57d8f3145c5b20d5942362ff028aee2ff45851a48c74437767311dda51b42af0"
+    }
+  },
+  {
+    "utc_boundary": "2026-08-29T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6839925,
+      "epochProgress": 2860410,
+      "timestamp": "2026-08-28T23:59:38.043Z",
+      "hash": "95486dc5361dabe1f07807a2f3f10e0a66b3904167e297dee1fbf83fb9acfc71",
+      "lastSnapshotHash": "dfda4a2672ac06606782ed5994621b6257c7f544a9574828c84fca09401ebc4c"
+    },
+    "first_at_or_after": {
+      "ordinal": 6839926,
+      "epochProgress": 2860411,
+      "timestamp": "2026-08-29T00:00:54.074Z",
+      "hash": "ce4af4b91e0ad958ca5ee1f4d2d0e3416ef93bff76ab7d0eaf4b1eb7d4899613",
+      "lastSnapshotHash": "95486dc5361dabe1f07807a2f3f10e0a66b3904167e297dee1fbf83fb9acfc71"
+    }
+  },
+  {
+    "utc_boundary": "2026-08-30T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6845596,
+      "epochProgress": 2861638,
+      "timestamp": "2026-08-29T23:59:46.772Z",
+      "hash": "071709aad3796ddcb41c8b9e042772ea4b6c408bf2cb43ed4f2c0045a1cb6ef1",
+      "lastSnapshotHash": "88f002dd86cf7163f793b175d2cfecb680d26014060cdca99299cef9c0ce2548"
+    },
+    "first_at_or_after": {
+      "ordinal": 6845597,
+      "epochProgress": 2861638,
+      "timestamp": "2026-08-30T00:00:00.247Z",
+      "hash": "cf90f330fa54ca7dff66e19455775694854c3c72330c92e8c93e9fcc55b23f52",
+      "lastSnapshotHash": "071709aad3796ddcb41c8b9e042772ea4b6c408bf2cb43ed4f2c0045a1cb6ef1"
+    }
+  },
+  {
+    "utc_boundary": "2026-08-31T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6851491,
+      "epochProgress": 2862880,
+      "timestamp": "2026-08-30T23:59:59.307Z",
+      "hash": "3ec1f946d97cae9436e72ebec65e6b2cac33fd23cfd9f9b6b802c7d736042720",
+      "lastSnapshotHash": "42b84343f226134cc5a9a976f99693289a7d22fce32042dc54eeca7d0c186b83"
+    },
+    "first_at_or_after": {
+      "ordinal": 6851492,
+      "epochProgress": 2862881,
+      "timestamp": "2026-08-31T00:00:12.623Z",
+      "hash": "4c340d90f76d54637e113e5e42f4423fe6de4de5835ff79bf2e5b9f55e24521b",
+      "lastSnapshotHash": "3ec1f946d97cae9436e72ebec65e6b2cac33fd23cfd9f9b6b802c7d736042720"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-01T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6857578,
+      "epochProgress": 2864179,
+      "timestamp": "2026-08-31T23:59:45.728Z",
+      "hash": "25101fc717fd37a0d94207f4edfa4a5ad2888a36b380bc31ddda1ae737736eb4",
+      "lastSnapshotHash": "20fc84384d6033362bd89645cdd45185136c5f081bc4d61ae9fd48b055a6ecbe"
+    },
+    "first_at_or_after": {
+      "ordinal": 6857579,
+      "epochProgress": 2864180,
+      "timestamp": "2026-09-01T00:00:07.463Z",
+      "hash": "a28af1115398dfce6b223ca86e088a0cefc37275b87119e0a90426c8a9a40593",
+      "lastSnapshotHash": "25101fc717fd37a0d94207f4edfa4a5ad2888a36b380bc31ddda1ae737736eb4"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-02T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6863638,
+      "epochProgress": 2865460,
+      "timestamp": "2026-09-01T23:59:43.007Z",
+      "hash": "8910013653c34fe4e604fbff96f86e04e249860a8ec6be48266282a4cef6a18c",
+      "lastSnapshotHash": "0d5a92c45c5e23edf08e00ea66a5d1e73e208eaad8f4935a1e965c78140957e7"
+    },
+    "first_at_or_after": {
+      "ordinal": 6863639,
+      "epochProgress": 2865460,
+      "timestamp": "2026-09-02T00:00:02.607Z",
+      "hash": "c7a97c3fd88dac6504fc715d12e1d5529b15dc57dae105446070ecd81f409bfa",
+      "lastSnapshotHash": "8910013653c34fe4e604fbff96f86e04e249860a8ec6be48266282a4cef6a18c"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-03T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6869156,
+      "epochProgress": 2866617,
+      "timestamp": "2026-09-02T23:58:41.112Z",
+      "hash": "86236d638464b591b00f87a60f171efe59af5761202516e952dc03b230e43a40",
+      "lastSnapshotHash": "36beba7225d79cf0c28ed6d689abb0a0d57cbf1992cf9af8d9d4deb9a17536ff"
+    },
+    "first_at_or_after": {
+      "ordinal": 6869157,
+      "epochProgress": 2866618,
+      "timestamp": "2026-09-03T00:02:32.754Z",
+      "hash": "84e2df99d744bf9cf189df94528f36810c0623bae026b6ed94e7e3fdcc84a1ad",
+      "lastSnapshotHash": "86236d638464b591b00f87a60f171efe59af5761202516e952dc03b230e43a40"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-04T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6875060,
+      "epochProgress": 2867872,
+      "timestamp": "2026-09-03T23:59:57.522Z",
+      "hash": "6a1dcf87b93fda75ae9a01bb0b637280e93942ee2afdf146195d6931257b4633",
+      "lastSnapshotHash": "0a51c0e543f4f86d3cf822903b0af7c76789d6f05ed6cd0315111b5a74b25956"
+    },
+    "first_at_or_after": {
+      "ordinal": 6875061,
+      "epochProgress": 2867873,
+      "timestamp": "2026-09-04T00:00:05.487Z",
+      "hash": "3f74151b39369fb3e9e814ca74e9587e35163bac9441de48843011016e00f0cc",
+      "lastSnapshotHash": "6a1dcf87b93fda75ae9a01bb0b637280e93942ee2afdf146195d6931257b4633"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-05T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6879238,
+      "epochProgress": 2868864,
+      "timestamp": "2026-09-04T23:59:47.752Z",
+      "hash": "bc8917ce931be90f574fd70fbc593a37ac9248c740bccd6a2de495b8bb2033a7",
+      "lastSnapshotHash": "cb47cb61086f744117d00f6f95e31e9635bab47d5a7263d5522c46fb229104b8"
+    },
+    "first_at_or_after": {
+      "ordinal": 6879239,
+      "epochProgress": 2868864,
+      "timestamp": "2026-09-05T00:00:03.022Z",
+      "hash": "21b4600aa069139eedd60f10b0af6ec67bc21aa9939430905e0c7e87571cfb21",
+      "lastSnapshotHash": "bc8917ce931be90f574fd70fbc593a37ac9248c740bccd6a2de495b8bb2033a7"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-06T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6881725,
+      "epochProgress": 2869669,
+      "timestamp": "2026-09-05T23:59:44.608Z",
+      "hash": "ab837b66fbdc41256fd563d24b9f443d641eb4fea316cc6a93ab60ba73acb1f4",
+      "lastSnapshotHash": "8f63649a4c6b5aa1fd3394280ec20c1f0e70be4a26fa76490f93027427d11ecd"
+    },
+    "first_at_or_after": {
+      "ordinal": 6881726,
+      "epochProgress": 2869669,
+      "timestamp": "2026-09-06T00:01:22.264Z",
+      "hash": "b473adb59dcfdbaa111ae8e24a35ad627aae42e9aed9eaf12976a3b625f996c4",
+      "lastSnapshotHash": "ab837b66fbdc41256fd563d24b9f443d641eb4fea316cc6a93ab60ba73acb1f4"
+    }
+  },
+  {
+    "utc_boundary": "2026-09-07T00:00:00+00:00",
+    "last_before": {
+      "ordinal": 6884163,
+      "epochProgress": 2870437,
+      "timestamp": "2026-09-06T23:59:46.777Z",
+      "hash": "ef5f5d61f732cc38513a69bf45e1f6855c44bcc6cb4557c68896d9311cb48362",
+      "lastSnapshotHash": "00fd867694aee1e94bcebc7805f793cb38572d640ce7d35497fd992b191fe8eb"
+    },
+    "first_at_or_after": {
+      "ordinal": 6884164,
+      "epochProgress": 2870438,
+      "timestamp": "2026-09-07T00:00:32.399Z",
+      "hash": "01694e1f5dfd5c8a2ea1a7b1d639f0bd3b0153a4dabcb9e3d0b2cd347b55a9c8",
+      "lastSnapshotHash": "ef5f5d61f732cc38513a69bf45e1f6855c44bcc6cb4557c68896d9311cb48362"
+    }
+  }
+]
