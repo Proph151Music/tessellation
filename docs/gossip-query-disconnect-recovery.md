@@ -9,7 +9,8 @@ The correction uses the existing HTTP library's resource-safe retry mechanism.
 
 There is no feature flag, new scheduler setting, consensus timeout change, or
 activation ordinal. This is separate from the optional timed-cadence proposal.
-It is a locally tested transport correction, not a confirmed resolution of the
+It passed the isolated five-validator A/B transient-reset campaign as well as
+component tests. It is not a confirmed resolution of the
 September Mainnet incident or authorization to deploy to a public network.
 
 ## Why this is needed
@@ -51,8 +52,10 @@ pinned Ember HTTP client; it does not join a validator network.
 
 The deterministic socket fault is EOF before headers, reported by Ember as
 `fs2.io.ClosedChannelException`. It is not a claim that a kernel Broken pipe was
-reproduced. Exact Broken pipe and Connection reset by peer errors are covered by
-dependency-policy and injected acquisition-failure tests.
+reproduced. Exact Broken pipe and both Connection reset spellings are covered by
+acquisition-failure tests. The native packet-reset campaign produces a real
+`java.io.IOException{message=Connection reset}`; see the
+[five-node qualification report](gossip-query-native-qualification.md).
 
 ## Implementation and safety
 
@@ -63,7 +66,7 @@ existing acquisition timeout and inside response-token verification.
   paths bypass the additional retry mechanism.
 - Requests already eligible for the library's idempotent retries bypass this
   mechanism, preventing compounded retry limits.
-- Only Broken pipe, Connection reset by peer, and the library's closed-channel
+- Only Broken pipe, Connection reset, Connection reset by peer, and the library's closed-channel
   exception qualify. Generic I/O errors, connection refusal, timeouts, validation
   failures and HTTP error responses do not receive additional retries.
 - The maximum is two total attempts. Both share the existing acquisition deadline;
@@ -93,8 +96,8 @@ Baseline: Mainnet v3.5.30, `9b1f826db65d56d1736a298fd18c842e0c93f5d6`.
 Stock transport control: research commit `758b72b6f`.
 Fix branch: `fix/gossip-read-query-disconnect-retry`.
 
-At 2026-09-07 21:03:57 UTC, all **303 nodeShared tests passed**, including
-21 transport/policy/authentication tests. Scoped production and test formatting
+At 2026-09-07 21:57:01 UTC, all **304 nodeShared tests passed**, including
+22 transport/policy/authentication tests. Scoped production and test formatting
 checks passed. The new coverage includes:
 
 - Real TCP stock-versus-corrected controls and persistent disconnect limits.
@@ -120,44 +123,47 @@ sbt -J-Xmx5G -J-XX:ActiveProcessorCount=4 \
 ```
 
 The local full output is retained at
-`/srv/projects/tw-devnet/evidence/mainnet-cadence/gossip-query-retry-full-20260907.log`.
-Its SHA256 is `2a3aec5ca48f5e94effcac33322427ed4d82a76062a63d935c61e416f3b82b92`.
+`/srv/projects/tw-devnet/evidence/mainnet-cadence/gossip-query-reset-final-20260907.log`.
+Its SHA256 is `4b2eb3b1d66b1c62cb206247de0566e3f6fafb83819d3201e1426ce954197f5c`.
 
 Additional consumer validation completed on September 7:
 
 | Suite | Passed | Failed | Ignored | Completion UTC |
 | --- | ---: | ---: | ---: | --- |
-| nodeShared | 303 | 0 | 0 | 21:03:57 |
-| dagL0 | 93 | 0 | 2 existing | 21:09:27 |
-| currencyL0 | 41 | 0 | 0 | 21:10:59 |
-| shared | 132 | 0 | 0 | 21:11:09 |
-| Total | 569 | 0 | 2 existing | |
+| nodeShared | 304 | 0 | 0 | 21:57:01 |
+| dagL0 | 93 | 0 | 2 existing | 21:57:57 |
+| currencyL0 | 41 | 0 | 0 | 21:58:18 |
+| shared | 132 | 0 | 0 | 21:58:28 |
+| Total | 570 | 0 | 2 existing | |
 
-`dagL0/assembly` passed at 21:11:46 UTC. The consumer command used the same JVM
+`dagL0/assembly` passed at 21:59:01 UTC. The consumer command used the same JVM
 options as above, followed by `'dagL0/test' 'currencyL0/test' 'shared/test'
-'dagL0/assembly'`. Output is retained at
-`/srv/projects/tw-devnet/evidence/mainnet-cadence/gossip-query-retry-consumers-20260907.log`,
-SHA256 `8906a0e2f7fe43ae60c23a7bede603090fbe4eadb3d6d3e1d5638117812c0417`.
+'dagL0/assembly'`. Output is included in the full log above.
 The two ignored DAG tests are stock trust-data generation tests; no ignore was added.
 
-The behavioral correction and its 15 new tests are committed separately as
-`6c4022a0b9f3ffca2b3f966a0e0a91b4acc98db6`. The four policy and two socket stock
-controls precede that commit. Assembly's formatting pass made whitespace-only
-changes to the new sources; final post-format checks are recorded separately.
-Post-format production/test formatting checks and all 21 transport tests passed
-again, completing 2026-09-07 21:13:28 UTC. Their output is retained as
-`/srv/projects/tw-devnet/evidence/mainnet-cadence/gossip-query-retry-final-20260907.log`.
-The resulting `99.99.99-SNAPSHOT` JAR is a local build, not a signed release or
-a deployment-qualified artifact. These tests do not replace native cluster qualification.
+The behavioral correction is committed separately as `6c4022a0b9f3ffca2b3f966a0e0a91b4acc98db6`;
+`bea938432` adds the exact native Connection reset spelling and its regression test.
+The four policy and two socket stock controls precede the correction. Native
+tooling is separate in `2f07b3c4e`; its 15 Python unit tests pass. Those tooling
+tests are not represented as validator-network tests.
 
-Local assembly identity: 107,516,118 bytes, SHA256
-`41ff2d7ccc0ccf228149f0745f0a63ed76b62bc4e54e69adf371966686ed2a75`.
-The build session began on the stock-control parent with uncommitted correction
-sources; the correction was committed during the sequential consumer run, without
-changing its behavior. Do not treat the JAR's build metadata as proof of a clean
-release checkout. A release-candidate build must be made from a clean pinned tree.
+Assembly and post-build production/test formatting checks passed from pinned
+source `2f07b3c4e67da5e9d8019bab73c3e7b8db357dbd` at 21:59:50 UTC. Output:
+`/srv/projects/tw-devnet/evidence/mainnet-cadence/gossip-query-reset-pinned-build-20260907.log`,
+SHA256 `85ee2bedffbe4065ad9ed78706c889fca1275e26b6be4cae189f4b9f521cd47b`.
+Local assembly: 107,516,125 bytes, SHA256
+`05e0560ba0f7b04cc17f29dea030c1b5dd5745317532c9fb57bd15cd8902de39`.
+The assembly task reused its up-to-date cache; this is not a clean-room release
+build. This `99.99.99-SNAPSHOT` JAR supersedes earlier local candidates and is
+neither a signed release nor a public deployment artifact.
 
 ## Upstream overlap and review boundaries
+
+The [native A/B report](gossip-query-native-qualification.md) records the completed
+five-node qualification: stock exposed four gossip-round errors from four query
+resets; fixed exposed zero. Both runs passed all 17 checks, retained all five
+participants and agreed through ordinal 12. The earlier stock run's error-wording
+classification failure is preserved, not silently relabeled as a pass.
 
 The September 7 read-only refresh found release/mainnet unchanged at the baseline
 and develop at `65b3667d414760763fe342e720a9486d2c0beb82`. Changed-file lists for
@@ -171,11 +177,13 @@ the separately committed stock consensus research tests. Maintainers can review
 the transport commits separately. The development CI scheduling race is unrelated
 and is not modified. No upstream PR or public deployment was performed here.
 
-Before calling this Mainnet-qualified, run an isolated multi-validator transient
-disconnect campaign with artifact identities, snapshot-agreement checks, healthy
-controls, persistent-failure controls and resource monitoring. Production-size
-load, supported upgrades, and the benefit to Mainnet snapshot cadence remain
-unmeasured. No rolling-upgrade or consensus-safety certification is claimed.
+The isolated multi-validator transient-disconnect campaign is complete. Persistent
+disconnect bounds, cancellation, deadlines, signing/tamper rejection and partial
+streams are covered by component tests, not a native persistent-outage campaign.
+Production-size load, supported upgrades, native persistent-outage behavior and
+the benefit to Mainnet snapshot cadence remain unmeasured. No rolling-upgrade or
+consensus-safety certification is claimed. This is ready for technical review,
+not a recommendation to deploy the local JAR to Mainnet.
 
 ## Source references
 
