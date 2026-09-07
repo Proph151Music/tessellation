@@ -1,0 +1,323 @@
+{
+  "status": "pass",
+  "mode": "query-fixed",
+  "gates": {
+    "completed": true,
+    "correct_mode": true,
+    "five_local_identities": true,
+    "five_retained_logs": true,
+    "per_node_phase_evidence": true,
+    "healthy_controls": true,
+    "two_control_three_post_rounds": true,
+    "exact_four_resets": true,
+    "owned_rules_removed": true,
+    "post_fault_progress": true,
+    "expected_signers": true,
+    "no_sampled_conflicts": true,
+    "no_fork_guard": true,
+    "no_measured_phase_locks": true,
+    "no_participation_change": true,
+    "five_healthy_containers": true,
+    "expected_transport_result": true
+  },
+  "identity": {
+    "kind": "identity",
+    "time": 1788819063.152347,
+    "mode": "query-fixed",
+    "source_commit": "2f07b3c4e67da5e9d8019bab73c3e7b8db357dbd",
+    "jar_sha256": "05e0560ba0f7b04cc17f29dea030c1b5dd5745317532c9fb57bd15cd8902de39",
+    "image": "sha256:eb716b08291d5e4bf25578dc9d3078982e7d061cb8edebcea28cf4f3a2d30364"
+  },
+  "reset_counts": {
+    "172.30.194.14": 1,
+    "172.30.194.13": 1,
+    "172.30.194.12": 1,
+    "172.30.194.11": 1
+  },
+  "gossip_round_errors": [],
+  "conflicts": [],
+  "fork_guards": [],
+  "phase_locks": [],
+  "active_round_seconds": [
+    {
+      "node": 0,
+      "ordinal": 8,
+      "seconds": 1.5490329265594482
+    },
+    {
+      "node": 0,
+      "ordinal": 9,
+      "seconds": 2.153877019882202
+    },
+    {
+      "node": 0,
+      "ordinal": 10,
+      "seconds": 1.7595489025115967
+    },
+    {
+      "node": 0,
+      "ordinal": 11,
+      "seconds": 1.7398560047149658
+    },
+    {
+      "node": 0,
+      "ordinal": 12,
+      "seconds": 1.944896936416626
+    },
+    {
+      "node": 1,
+      "ordinal": 8,
+      "seconds": 1.9657399654388428
+    },
+    {
+      "node": 1,
+      "ordinal": 9,
+      "seconds": 1.9528818130493164
+    },
+    {
+      "node": 1,
+      "ordinal": 10,
+      "seconds": 1.7463619709014893
+    },
+    {
+      "node": 1,
+      "ordinal": 11,
+      "seconds": 1.7298989295959473
+    },
+    {
+      "node": 1,
+      "ordinal": 12,
+      "seconds": 2.131195068359375
+    },
+    {
+      "node": 2,
+      "ordinal": 8,
+      "seconds": 1.752845048904419
+    },
+    {
+      "node": 2,
+      "ordinal": 9,
+      "seconds": 2.1234121322631836
+    },
+    {
+      "node": 2,
+      "ordinal": 10,
+      "seconds": 1.5352530479431152
+    },
+    {
+      "node": 2,
+      "ordinal": 11,
+      "seconds": 1.9536211490631104
+    },
+    {
+      "node": 2,
+      "ordinal": 12,
+      "seconds": 1.3361268043518066
+    },
+    {
+      "node": 3,
+      "ordinal": 8,
+      "seconds": 1.736687183380127
+    },
+    {
+      "node": 3,
+      "ordinal": 9,
+      "seconds": 2.14404296875
+    },
+    {
+      "node": 3,
+      "ordinal": 10,
+      "seconds": 1.5224361419677734
+    },
+    {
+      "node": 3,
+      "ordinal": 11,
+      "seconds": 2.157353162765503
+    },
+    {
+      "node": 3,
+      "ordinal": 12,
+      "seconds": 1.7269699573516846
+    },
+    {
+      "node": 4,
+      "ordinal": 8,
+      "seconds": 1.536808967590332
+    },
+    {
+      "node": 4,
+      "ordinal": 9,
+      "seconds": 2.1036839485168457
+    },
+    {
+      "node": 4,
+      "ordinal": 10,
+      "seconds": 1.5351409912109375
+    },
+    {
+      "node": 4,
+      "ordinal": 11,
+      "seconds": 1.935572862625122
+    },
+    {
+      "node": 4,
+      "ordinal": 12,
+      "seconds": 1.7412309646606445
+    }
+  ],
+  "last_sample": {
+    "time": 1788819653.9714158,
+    "tips": [
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+        "signers": [
+          "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+          "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+          "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+          "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+          "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+        "signers": [
+          "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+          "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+          "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+          "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+          "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+        "signers": [
+          "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+          "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+          "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+          "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+          "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+        "signers": [
+          "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+          "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+          "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+          "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+          "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+        "signers": [
+          "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+          "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+          "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+          "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+          "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+        ],
+        "rewards": 5
+      }
+    ],
+    "fetch_errors": {},
+    "node_states": [
+      "Ready",
+      "Ready",
+      "Ready",
+      "Ready",
+      "Ready"
+    ]
+  },
+  "post_fault_tips": [
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+      "signers": [
+        "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+        "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+        "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+        "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+        "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+      "signers": [
+        "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+        "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+        "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+        "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+        "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+      "signers": [
+        "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+        "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+        "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+        "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+        "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+      "signers": [
+        "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+        "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+        "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+        "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+        "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "37ffdc4f1f6eb94325d4c9af0baa7a0e3bb893fe0678cc52da8b234e1017b6d8",
+      "signers": [
+        "2e40c30c21cce645da2ddaa1e3eb72d8218f05451a98483c7c547ffca0e8a69e1b48ac33dad01eb9e49cb38aee27ba4f572dd9150d12a7b7f901654731c94817",
+        "38fc902cf7118aa5f0c2de0a3eee937025a6ccb1f09b1242e7a4429f5274c08760eaf1843d60041840d1b4b038298416ff93a42b9fe6e00a12737d32df819e2e",
+        "53345902436c61a8228433f361281dc6261907159d7c5af6b3c654596afc6d53c88c9a79fd46337230db30d523995b51246c3805d5c07d0c4681f2f6a08b722c",
+        "7c8b834a42634d322cf4a810d82aaf878323dad7a161f87d42e469b00b0f7fb44d45c041ea88268418d46e03ce55f6a826a7cd857be932a1bc8a4450d23cb4e6",
+        "8ea91af8d388278df070422b1edb8fd0aef56c204fd44e7be267ffa4a413248ede4989bae5f53574b83c4af5a32e1b8d68f1955ac02ff2a0dce3039d43332ff5"
+      ],
+      "rewards": 5
+    }
+  ],
+  "samples": 95,
+  "sha256": {
+    "events.json": "370b12f65f010098461b56d4c2d1359e14522de07f3835ee4f847d7c6d3c0bde",
+    "samples.jsonl": "2dbe87b620f5ae72d521289e8f2b70cf53909a62c79f3a0f380a0ea1d9f17022",
+    "mr-query-fixed-1788819062-0.log": "8446ff5c0d7c66b53c25f0550e8656b2594be075c30b6235cc139882f9e1f3ee",
+    "mr-query-fixed-1788819062-1.log": "7d9fd34e83c793b9a198b018ef9002750801a2613c72eecd00b5d3223924cf83",
+    "mr-query-fixed-1788819062-2.log": "91ee0cea2d3b8fe42078479b39a7e9bece6ee626adfc04070c1a831d95b2fd38",
+    "mr-query-fixed-1788819062-3.log": "1eb64b15a41517a085f6d401faf20a2b4416c46f0ff83014ad84b6d9af0ca1c4",
+    "mr-query-fixed-1788819062-4.log": "0f7415c140f41e90c14c19f46eb98f2fbeb1ce618a46199163593be64855112a"
+  }
+}

@@ -1,0 +1,328 @@
+{
+  "status": "pass",
+  "mode": "query-stock",
+  "gates": {
+    "completed": true,
+    "correct_mode": true,
+    "five_local_identities": true,
+    "five_retained_logs": true,
+    "per_node_phase_evidence": true,
+    "healthy_controls": true,
+    "two_control_three_post_rounds": true,
+    "exact_four_resets": true,
+    "owned_rules_removed": true,
+    "post_fault_progress": true,
+    "expected_signers": true,
+    "no_sampled_conflicts": true,
+    "no_fork_guard": true,
+    "no_measured_phase_locks": true,
+    "no_participation_change": true,
+    "five_healthy_containers": true,
+    "expected_transport_result": true
+  },
+  "identity": {
+    "kind": "identity",
+    "time": 1788818415.7330058,
+    "mode": "query-stock",
+    "source_commit": "9b1f826db65d56d1736a298fd18c842e0c93f5d6",
+    "jar_sha256": "9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d",
+    "image": "sha256:eb716b08291d5e4bf25578dc9d3078982e7d061cb8edebcea28cf4f3a2d30364"
+  },
+  "reset_counts": {
+    "172.30.194.14": 1,
+    "172.30.194.13": 1,
+    "172.30.194.12": 1,
+    "172.30.194.11": 1
+  },
+  "gossip_round_errors": [
+    "2026-09-07T22:07:55.415212752Z 22:07:55.414 [io-compute-1] ERROR i.c.n.s.i.g.G.$anon - Error running gossip round {peer=Peer{id=e2d77522,ip=172.30.194.11,publicPort=9000,p2pPort=9001,clusterSession=1788818517006,session=1788818524576,state=Ready{},responsiveness=Responsive{},jar=9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d}, reason=java.io.IOException{message=Connection reset}",
+    "2026-09-07T22:07:55.612049128Z 22:07:55.611 [io-compute-1] ERROR i.c.n.s.i.g.G.$anon - Error running gossip round {peer=Peer{id=cf1624f5,ip=172.30.194.13,publicPort=9000,p2pPort=9001,clusterSession=1788818517006,session=1788818574121,state=Ready{},responsiveness=Responsive{},jar=9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d}, reason=java.io.IOException{message=Connection reset}",
+    "2026-09-07T22:07:55.803332542Z 22:07:55.802 [io-compute-1] ERROR i.c.n.s.i.g.G.$anon - Error running gossip round {peer=Peer{id=ad2052fa,ip=172.30.194.12,publicPort=9000,p2pPort=9001,clusterSession=1788818517006,session=1788818524855,state=Ready{},responsiveness=Responsive{},jar=9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d}, reason=java.io.IOException{message=Connection reset}",
+    "2026-09-07T22:07:56.004211847Z 22:07:56.003 [io-compute-0] ERROR i.c.n.s.i.g.G.$anon - Error running gossip round {peer=Peer{id=68ec206e,ip=172.30.194.14,publicPort=9000,p2pPort=9001,clusterSession=1788818517006,session=1788818574960,state=Ready{},responsiveness=Responsive{},jar=9a5726027b962f3a8271d77c37e9c11c66d10a5a960da44d06c283b2a523ed5d}, reason=java.io.IOException{message=Connection reset}"
+  ],
+  "conflicts": [],
+  "fork_guards": [],
+  "phase_locks": [],
+  "active_round_seconds": [
+    {
+      "node": 0,
+      "ordinal": 8,
+      "seconds": 2.178406000137329
+    },
+    {
+      "node": 0,
+      "ordinal": 9,
+      "seconds": 2.550654888153076
+    },
+    {
+      "node": 0,
+      "ordinal": 10,
+      "seconds": 2.1987199783325195
+    },
+    {
+      "node": 0,
+      "ordinal": 11,
+      "seconds": 3.347625970840454
+    },
+    {
+      "node": 0,
+      "ordinal": 12,
+      "seconds": 2.0989561080932617
+    },
+    {
+      "node": 1,
+      "ordinal": 8,
+      "seconds": 1.5491228103637695
+    },
+    {
+      "node": 1,
+      "ordinal": 9,
+      "seconds": 1.7230260372161865
+    },
+    {
+      "node": 1,
+      "ordinal": 10,
+      "seconds": 3.3638739585876465
+    },
+    {
+      "node": 1,
+      "ordinal": 11,
+      "seconds": 3.3349180221557617
+    },
+    {
+      "node": 1,
+      "ordinal": 12,
+      "seconds": 1.9018020629882812
+    },
+    {
+      "node": 2,
+      "ordinal": 8,
+      "seconds": 2.134644031524658
+    },
+    {
+      "node": 2,
+      "ordinal": 9,
+      "seconds": 2.3343539237976074
+    },
+    {
+      "node": 2,
+      "ordinal": 10,
+      "seconds": 2.1478939056396484
+    },
+    {
+      "node": 2,
+      "ordinal": 11,
+      "seconds": 3.5559911727905273
+    },
+    {
+      "node": 2,
+      "ordinal": 12,
+      "seconds": 1.77341890335083
+    },
+    {
+      "node": 3,
+      "ordinal": 8,
+      "seconds": 1.872908115386963
+    },
+    {
+      "node": 3,
+      "ordinal": 9,
+      "seconds": 2.5303709506988525
+    },
+    {
+      "node": 3,
+      "ordinal": 10,
+      "seconds": 2.154690980911255
+    },
+    {
+      "node": 3,
+      "ordinal": 11,
+      "seconds": 3.351637125015259
+    },
+    {
+      "node": 3,
+      "ordinal": 12,
+      "seconds": 2.005375862121582
+    },
+    {
+      "node": 4,
+      "ordinal": 8,
+      "seconds": 1.249863862991333
+    },
+    {
+      "node": 4,
+      "ordinal": 9,
+      "seconds": 2.5385100841522217
+    },
+    {
+      "node": 4,
+      "ordinal": 10,
+      "seconds": 2.5229909420013428
+    },
+    {
+      "node": 4,
+      "ordinal": 11,
+      "seconds": 3.1557700634002686
+    },
+    {
+      "node": 4,
+      "ordinal": 12,
+      "seconds": 2.012727975845337
+    }
+  ],
+  "last_sample": {
+    "time": 1788819008.993751,
+    "tips": [
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+        "signers": [
+          "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+          "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+          "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+          "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+          "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+        "signers": [
+          "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+          "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+          "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+          "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+          "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+        "signers": [
+          "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+          "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+          "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+          "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+          "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+        "signers": [
+          "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+          "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+          "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+          "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+          "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+        ],
+        "rewards": 5
+      },
+      {
+        "ordinal": 12,
+        "epoch": 12,
+        "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+        "signers": [
+          "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+          "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+          "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+          "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+          "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+        ],
+        "rewards": 5
+      }
+    ],
+    "fetch_errors": {},
+    "node_states": [
+      "Ready",
+      "Ready",
+      "Ready",
+      "Ready",
+      "Ready"
+    ]
+  },
+  "post_fault_tips": [
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+      "signers": [
+        "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+        "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+        "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+        "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+        "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+      "signers": [
+        "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+        "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+        "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+        "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+        "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+      "signers": [
+        "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+        "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+        "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+        "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+        "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+      "signers": [
+        "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+        "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+        "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+        "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+        "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+      ],
+      "rewards": 5
+    },
+    {
+      "ordinal": 12,
+      "epoch": 12,
+      "digest": "7278a078eccf6131d5fc5df80b92bc1f2c9a43a7ec8017ed7ab5ee8843d00298",
+      "signers": [
+        "68ec206ef54f7332d95d4f8a126c72b9a8541961ce7ac98779e3b04ccddc815d32a1b902c885d4bd19d0df652f1bc9b2d6d34a79e6fa430ee8d55f40406ae8b7",
+        "6a4cdc25fe93d3682306bb4db1e7e13b53cfbe677014ae4bf6b371b5d97d62b350f326dbd2d70800b4064b81742dd32599b84143b2434355f38f7de252e9c1f9",
+        "ad2052faeb5e715f6e385f94340c5a76dcc2ff52762f4810e553fe51921cca226123295b7f2b4bf9c1b37aa918a36590b6bbb5ffcb84248e141fd6b2e3e0362c",
+        "cf1624f5e2fa82e14ee8f2fc81a350e0fbd467c0dee5ece0eca96f5a8e498e13d06efa85836628349b37d4b59648034224ecad8216052b70cd7947483c479443",
+        "e2d775223baa1b70d7239daa697bd7db31ea0e4b63ace78b77abba2a38e3ddd606e185a1c95baca51c18ef52154fce66b38106052921a1373771d017be6d9e00"
+      ],
+      "rewards": 5
+    }
+  ],
+  "samples": 95,
+  "sha256": {
+    "events.json": "6152464debcd440c80c4717b7c7fb9f47c95f507a199cc4a4f3f3554c47a52a2",
+    "samples.jsonl": "4e9d97e734924757b5e56429db9960364b62e4e0002bfb5e53eafcbd8c87488d",
+    "mr-query-stock-1788818414-0.log": "c1e689215069acf23f8cd356e2db3fc50f2bcd8b0350c1de26e47a0307292a61",
+    "mr-query-stock-1788818414-1.log": "44ee959d867cd30b4c922595e973fa1e39366d7c1824431b6842ecfe7191ab09",
+    "mr-query-stock-1788818414-2.log": "d1fe2a6782570783e2804f9151059a3bc57d076bb64edf30b751d32f999a4211",
+    "mr-query-stock-1788818414-3.log": "f2bb0f97e3b3889b218b51a8effcb6f0c91c1314abc395766d257c1595484e64",
+    "mr-query-stock-1788818414-4.log": "76e64779f82737e6dfb0f003e2a9ef3481651d334b208b08f6541988f69927c2"
+  }
+}
