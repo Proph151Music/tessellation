@@ -17,9 +17,9 @@ import io.constellationnetwork.security.hex.Hex
 import eu.timepit.refined.auto._
 import weaver.SimpleIOSuite
 
-/** Stock generic barrier/recovery component reproduction, not an artifact/signature or network test.
-  * Phase numbers are fixtures. A proposal-presence slot stands for the selected declaration kind.
-  * No production timeouts, messages, quorum rules, or signatures are changed or fabricated.
+/** Stock generic barrier/recovery component reproduction, not an artifact/signature or network test. Phase numbers are fixtures. A
+  * proposal-presence slot stands for the selected declaration kind. No production timeouts, messages, quorum rules, or signatures are
+  * changed or fabricated.
   */
 object SuccessivePhaseRecoverySuite extends SimpleIOSuite {
   type State = ConsensusState[Int, Int, Unit, Int]
@@ -54,26 +54,29 @@ object SuccessivePhaseRecoverySuite extends SimpleIOSuite {
     UnlockConsensusUpdate.tryUnlock[IO, State, Int](acks)(s => if (s.status < 3) Some(s.status) else None).runS(state)
 
   test("144 to 141: three distinct phase removals each need their own current-kind acknowledgment threshold") {
-    (0 until 3).toList.foldLeftM((initial, success)) {
-      case ((previous, checks), phase) =>
-        val state = previous.copy(status = phase, lockStatus = LockStatus.Closed)
-        val missing = peers(phase)
-        val received = state.facilitators.value.toSet - missing
-        val threshold = state.facilitators.value.size / 2 + 1
-        for {
-          blocked <- barrier.collect(state, resources(received))
-          insufficient <- unlock(state, acknowledgments(state, missing, threshold - 1, phase))
-          recovered <- unlock(state, acknowledgments(state, missing, threshold, phase))
-          complete <- barrier.collect(recovered, resources(received))
-        } yield (
-          recovered,
-          checks && expect(blocked.isEmpty) && expect.same(insufficient, state) &&
-            expect.same(recovered.lockStatus, LockStatus.Reopened) &&
-            expect.same(recovered.facilitators.value.size, 143 - phase) &&
-            expect.same(recovered.removedFacilitators.value, peers.take(phase + 1).toSet) &&
-            expect(recovered.withdrawnFacilitators.value.isEmpty) && expect.same(complete.map(_.keySet), Some(received))
-        )
-    }.map(_._2)
+    (0 until 3).toList
+      .foldLeftM((initial, success)) {
+        case ((previous, checks), phase) =>
+          val state = previous.copy(status = phase, lockStatus = LockStatus.Closed)
+          val missing = peers(phase)
+          val received = state.facilitators.value.toSet - missing
+          val threshold = state.facilitators.value.size / 2 + 1
+          for {
+            blocked <- barrier.collect(state, resources(received))
+            insufficient <- unlock(state, acknowledgments(state, missing, threshold - 1, phase))
+            recovered <- unlock(state, acknowledgments(state, missing, threshold, phase))
+            complete <- barrier.collect(recovered, resources(received))
+          } yield
+            (
+              recovered,
+              checks && expect(blocked.isEmpty) && expect.same(insufficient, state) &&
+                expect.same(recovered.lockStatus, LockStatus.Reopened) &&
+                expect.same(recovered.facilitators.value.size, 143 - phase) &&
+                expect.same(recovered.removedFacilitators.value, peers.take(phase + 1).toSet) &&
+                expect(recovered.withdrawnFacilitators.value.isEmpty) && expect.same(complete.map(_.keySet), Some(received))
+            )
+      }
+      .map(_._2)
   }
 
   test("staleness and long elapsed time alone never remove a missing declaration") {
@@ -94,8 +97,12 @@ object SuccessivePhaseRecoverySuite extends SimpleIOSuite {
 
   test("removed participants and outsiders cannot supply the next phase's decisive acknowledgment") {
     val missing = peers(1)
-    val state = initial.copy(status = 1, facilitators = Facilitators(peers.tail), lockStatus = LockStatus.Closed,
-                             removedFacilitators = RemovedFacilitators(Set(peers.head)))
+    val state = initial.copy(
+      status = 1,
+      facilitators = Facilitators(peers.tail),
+      lockStatus = LockStatus.Closed,
+      removedFacilitators = RemovedFacilitators(Set(peers.head))
+    )
     val received = state.facilitators.value.toSet - missing
     val outsider = PeerId(Hex("f" * 128))
     val insufficient = acknowledgments(state, missing, 71, 1)
@@ -111,6 +118,18 @@ object SuccessivePhaseRecoverySuite extends SimpleIOSuite {
 
   test("healthy declarations preserve all participants and require no recovery removal") {
     barrier.collect(initial, resources(peers.toSet)).map(result => expect.same(result.map(_.keySet), Some(peers.toSet)))
+  }
+
+  test("a keep decision does not supply a declaration missing from the local node") {
+    val locked = initial.copy(lockStatus = LockStatus.Closed)
+    val positiveAcks = peers.take(73).map(peer => (peer, 0) -> peers.toSet).toMap
+    for {
+      reopened <- unlock(locked, positiveAcks)
+      stillMissing <- barrier.collect(reopened, resources(peers.tail.toSet))
+      afterDelivery <- barrier.collect(reopened, resources(peers.toSet))
+    } yield
+      expect.same(reopened.lockStatus, LockStatus.Reopened) &&
+        expect(reopened.removedFacilitators.value.isEmpty) && expect(stillMissing.isEmpty) && expect(afterDelivery.isDefined)
   }
 
   test("arrival of the missing declaration before recovery allows the unchanged barrier to complete") {
