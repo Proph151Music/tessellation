@@ -35,7 +35,7 @@ private[p2p] object GossipQueryRetry {
 
   private def isDisconnect(error: Throwable): Boolean = error match {
     case _: fs2.io.ClosedChannelException => true
-    case error: IOException               => Set("Broken pipe", "Connection reset by peer").contains(error.getMessage)
+    case error: IOException               => Set("Broken pipe", "Connection reset", "Connection reset by peer").contains(error.getMessage)
     case _                                => false
   }
 }

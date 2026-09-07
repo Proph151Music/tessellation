@@ -44,9 +44,26 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
     }.map(_.reduce(_ && _))
   }
 
+  test("both exact connection-reset messages recover with one additional acquisition") {
+    List("Connection reset", "Connection reset by peer").traverse { message =>
+      for {
+        counter <- Ref.of[IO, Int](0)
+        client = Client[IO] { _ =>
+          Resource.eval(counter.updateAndGet(_ + 1).flatMap {
+            case 1 => IO.raiseError[Response[IO]](new IOException(message))
+            case _ => IO.pure(Response[IO]().withEntity("ok"))
+          })
+        }
+        response <- GossipQueryRetry(client).expect[String](request())
+        attempts <- counter.get
+      } yield expect(response == "ok") && expect(attempts == 2)
+    }.map(_.reduce(_ && _))
+  }
+
   test("persistent disconnects escape after exactly two attempts") {
     List[Throwable](
       new IOException("Broken pipe"),
+      new IOException("Connection reset"),
       new IOException("Connection reset by peer"),
       new fs2.io.ClosedChannelException()
     ).traverse { error =>
@@ -79,6 +96,7 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
     List[Throwable](
       new TimeoutException(),
       new IOException("unknown"),
+      new IOException("Connection reset while processing unknown operation"),
       new IOException(),
       new IllegalArgumentException("invalid")
     ).traverse { error =>
