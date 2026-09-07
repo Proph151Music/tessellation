@@ -1,7 +1,9 @@
 # Mainnet successive-phase recovery reproduction
 
-Status: stock-code research tests. This branch contains no production behavior change.
-It is separate from the optional cadence scheduler and is not a Mainnet incident fix.
+Status: this report describes stock-code research at commit `81b175746` and the
+`research/mainnet-phase-recovery` branch. It is separate from the optional cadence
+scheduler and is not a Mainnet incident fix. The later transport correction has
+its own scope and results in [gossip-query-disconnect-recovery.md](gossip-query-disconnect-recovery.md).
 
 ## Observed problem
 
@@ -28,7 +30,7 @@ as their first introduction. The manager, updater, unlock implementation, and
 ## Baseline and isolation
 
 - Production source: v3.5.30, commit `9b1f826db65d56d1736a298fd18c842e0c93f5d6`.
-- All modifications are tests or documentation, not production code/configuration.
+- Modifications in that stock research control are tests or documentation, not production code/configuration.
 - Research branch: `research/mainnet-phase-recovery`.
 - No public validators, keys, transactions, or network writes are used by tests.
 - No signatures or signed artifacts are manufactured. The manager test's artifact
