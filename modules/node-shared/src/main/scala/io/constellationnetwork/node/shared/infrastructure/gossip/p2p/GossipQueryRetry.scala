@@ -18,10 +18,11 @@ private[p2p] object GossipQueryRetry {
     // The library middleware releases the failed acquisition before starting the next.
     // Re-enter the signed client, never replay a consumed response stream.
     val retryClient = Retry.create[F](
-      (_, result, attempt) => result match {
-        case Left(error) if attempt == 1 && isDisconnect(error) => Some(Duration.Zero)
-        case _                                                 => None
-      },
+      (_, result, attempt) =>
+        result match {
+          case Left(error) if attempt == 1 && isDisconnect(error) => Some(Duration.Zero)
+          case _                                                  => None
+        },
       logRetries = false
     )(client)
 
@@ -34,7 +35,7 @@ private[p2p] object GossipQueryRetry {
 
   private def isDisconnect(error: Throwable): Boolean = error match {
     case _: fs2.io.ClosedChannelException => true
-    case error: IOException              => Set("Broken pipe", "Connection reset by peer").contains(error.getMessage)
-    case _                               => false
+    case error: IOException               => Set("Broken pipe", "Connection reset by peer").contains(error.getMessage)
+    case _                                => false
   }
 }

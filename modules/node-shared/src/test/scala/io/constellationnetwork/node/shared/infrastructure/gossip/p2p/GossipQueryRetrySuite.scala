@@ -45,14 +45,17 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
   }
 
   test("persistent disconnects escape after exactly two attempts") {
-    List[Throwable](new IOException("Broken pipe"), new IOException("Connection reset by peer"), new fs2.io.ClosedChannelException())
-      .traverse { error =>
-        for {
-          counter <- Ref.of[IO, Int](0)
-          result <- GossipQueryRetry(failing(counter, error)).expect[String](request()).attempt
-          attempts <- counter.get
-        } yield expect(result == Left(error)) && expect(attempts == 2)
-      }
+    List[Throwable](
+      new IOException("Broken pipe"),
+      new IOException("Connection reset by peer"),
+      new fs2.io.ClosedChannelException()
+    ).traverse { error =>
+      for {
+        counter <- Ref.of[IO, Int](0)
+        result <- GossipQueryRetry(failing(counter, error)).expect[String](request()).attempt
+        attempts <- counter.get
+      } yield expect(result == Left(error)) && expect(attempts == 2)
+    }
       .map(_.reduce(_ && _))
   }
 
@@ -73,14 +76,18 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
   }
 
   test("timeouts, unknown I/O failures and validation exceptions receive no added retry") {
-    List[Throwable](new TimeoutException(), new IOException("unknown"), new IOException(), new IllegalArgumentException("invalid"))
-      .traverse { error =>
-        for {
-          counter <- Ref.of[IO, Int](0)
-          result <- GossipQueryRetry(failing(counter, error)).expect[String](request()).attempt
-          attempts <- counter.get
-        } yield expect(result == Left(error)) && expect(attempts == 1)
-      }
+    List[Throwable](
+      new TimeoutException(),
+      new IOException("unknown"),
+      new IOException(),
+      new IllegalArgumentException("invalid")
+    ).traverse { error =>
+      for {
+        counter <- Ref.of[IO, Int](0)
+        result <- GossipQueryRetry(failing(counter, error)).expect[String](request()).attempt
+        attempts <- counter.get
+      } yield expect(result == Left(error)) && expect(attempts == 1)
+    }
       .map(_.reduce(_ && _))
   }
 
@@ -153,8 +160,9 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
         elapsed <- IO.monotonic.map(_ - start)
         count <- attempts.get
         stopped <- canceled.get
-      } yield expect(result.left.exists(_.isInstanceOf[TimeoutException])) &&
-        expect(elapsed == 50.millis) && expect(count == 2) && expect(stopped)
+      } yield
+        expect(result.left.exists(_.isInstanceOf[TimeoutException])) &&
+          expect(elapsed == 50.millis) && expect(count == 2) && expect(stopped)
     }
   }
 
@@ -172,24 +180,30 @@ object GossipQueryRetrySuite extends SimpleIOSuite {
   }
 
   test("real loopback POST recovers from a disconnect within the same operation") {
-    GossipDisconnectFixture.peer(failures = 1).use { peer =>
-      EmberClientBuilder.default[IO].build.use { client =>
-        for {
-          response <- GossipQueryRetry(client).expect[String](request().withUri(peer.uri))
-          requests <- peer.requests.get
-        } yield expect(response == "ok") && expect(requests.size == 2) && expect(requests.forall(_.body == "{}"))
+    GossipDisconnectFixture
+      .peer(failures = 1)
+      .use { peer =>
+        EmberClientBuilder.default[IO].build.use { client =>
+          for {
+            response <- GossipQueryRetry(client).expect[String](request().withUri(peer.uri))
+            requests <- peer.requests.get
+          } yield expect(response == "ok") && expect(requests.size == 2) && expect(requests.forall(_.body == "{}"))
+        }
       }
-    }.timeout(10.seconds)
+      .timeout(10.seconds)
   }
 
   test("real loopback persistent disconnect does not exceed the retry bound") {
-    GossipDisconnectFixture.peer(failures = 10).use { peer =>
-      EmberClientBuilder.default[IO].build.use { client =>
-        for {
-          result <- GossipQueryRetry(client).expect[String](request().withUri(peer.uri)).attempt
-          requests <- peer.requests.get
-        } yield expect(result.isLeft) && expect(requests.size == 2)
+    GossipDisconnectFixture
+      .peer(failures = 10)
+      .use { peer =>
+        EmberClientBuilder.default[IO].build.use { client =>
+          for {
+            result <- GossipQueryRetry(client).expect[String](request().withUri(peer.uri)).attempt
+            requests <- peer.requests.get
+          } yield expect(result.isLeft) && expect(requests.size == 2)
+        }
       }
-    }.timeout(10.seconds)
+      .timeout(10.seconds)
   }
 }

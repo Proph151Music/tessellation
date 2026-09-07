@@ -67,8 +67,9 @@ object GossipQueryAuthenticationSuite extends SimpleIOSuite {
               count <- observed.modify { rows =>
                 (rows :+ ((response.status, body, req.headers.get[`X-Session-Token`].exists(_.token == token))), rows.size)
               }
-              result <- if (count == 0) IO.raiseError[Response[IO]](new IOException("Broken pipe"))
-              else IO.pure(Response[IO]().withEntity(body))
+              result <-
+                if (count == 0) IO.raiseError[Response[IO]](new IOException("Broken pipe"))
+                else IO.pure(Response[IO]().withEntity(body))
             } yield result
           }
         }
@@ -76,8 +77,9 @@ object GossipQueryAuthenticationSuite extends SimpleIOSuite {
         request = Request[IO](Method.POST, Uri.unsafeFromString("http://127.0.0.1/rumors/peer/query")).withEntity("{\"ordinals\":{}}")
         response <- GossipQueryRetry(signed).expect[String](request)
         attempts <- observed.get
-      } yield expect(response == "{\"ordinals\":{}}") &&
-        expect(attempts == Vector.fill(2)((Status.Ok, "{\"ordinals\":{}}", true)))
+      } yield
+        expect(response == "{\"ordinals\":{}}") &&
+          expect(attempts == Vector.fill(2)((Status.Ok, "{\"ordinals\":{}}", true)))
     }
   }
 
@@ -112,8 +114,9 @@ object GossipQueryAuthenticationSuite extends SimpleIOSuite {
         _ <- gossip.queryCommonRumors(QueryCommonRumorsRequest(Set.empty)).run(context).compile.drain
         attempts <- calls.get
         verifications <- checks.get
-      } yield expect(attempts == Map("/rumors/peer/query" -> 2, "/rumors/peer/init" -> 2, "/rumors/common/query" -> 2)) &&
-        expect(verifications == 3)
+      } yield
+        expect(attempts == Map("/rumors/peer/query" -> 2, "/rumors/peer/init" -> 2, "/rumors/common/query" -> 2)) &&
+          expect(verifications == 3)
     }
   }
 }
