@@ -1,0 +1,121 @@
+{
+  "run": "mixed-run-01",
+  "completed": true,
+  "events": [
+    {
+      "kind": "five_ready",
+      "time": 1788739906.0067313
+    },
+    {
+      "kind": "paused",
+      "time": 1788740116.9817746,
+      "node": 4
+    },
+    {
+      "kind": "restored",
+      "time": 1788740247.4738185,
+      "node": 4
+    },
+    {
+      "kind": "completed",
+      "time": 1788740327.8227532
+    }
+  ],
+  "samples": 165,
+  "observed_ordinals": 13,
+  "ordinals_compared_across_nodes": 8,
+  "same_ordinal_value_conflicts": {},
+  "nonlocal_or_duplicate_signers": [],
+  "ordinal_regressions": [],
+  "recovery_locks": [
+    {
+      "node": "mc-mixed-1788739517-0",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788740192.149
+    },
+    {
+      "node": "mc-mixed-1788739517-2",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788740212.563
+    },
+    {
+      "node": "mc-mixed-1788739517-3",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788740191.739
+    },
+    {
+      "node": "mc-mixed-1788739517-1",
+      "ordinal": 11,
+      "phase": "CollectingFacilities",
+      "time": 1788740192.18
+    }
+  ],
+  "healthy_recovery_locks": [],
+  "progress_after_restore": [
+    {
+      "node": 0,
+      "advanced": true
+    },
+    {
+      "node": 1,
+      "advanced": true
+    },
+    {
+      "node": 2,
+      "advanced": true
+    },
+    {
+      "node": 3,
+      "advanced": true
+    },
+    {
+      "node": 4,
+      "advanced": false
+    }
+  ],
+  "final_api_availability": [
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "node_ranges": [
+    {
+      "node": 0,
+      "first": 1,
+      "last": 13
+    },
+    {
+      "node": 1,
+      "first": 6,
+      "last": 13
+    },
+    {
+      "node": 2,
+      "first": 6,
+      "last": 13
+    },
+    {
+      "node": 3,
+      "first": 7,
+      "last": 13
+    },
+    {
+      "node": 4,
+      "first": 7,
+      "last": 10
+    }
+  ],
+  "complete_phase_records": 39,
+  "nodes_with_complete_phase_records": 5,
+  "median_round_seconds": 22.138,
+  "limitations": [
+    "Sampled values are JSON digests, not protocol hashes or independent signature verification.",
+    "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
+    "Fault injection is wall-time based, not phase-aligned; do not infer causal throughput gains from it."
+  ]
+}

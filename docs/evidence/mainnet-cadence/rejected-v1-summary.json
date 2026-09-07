@@ -1,0 +1,278 @@
+{
+  "run": "candidate-run-01",
+  "completed": true,
+  "events": [
+    {
+      "kind": "five_ready",
+      "time": 1788735880.0363593
+    },
+    {
+      "kind": "paused",
+      "time": 1788736032.5506682,
+      "node": 4
+    },
+    {
+      "kind": "restored",
+      "time": 1788736111.0482438,
+      "node": 4
+    },
+    {
+      "kind": "completed",
+      "time": 1788736181.8584375
+    }
+  ],
+  "samples": 152,
+  "observed_ordinals": 10,
+  "ordinals_compared_across_nodes": 5,
+  "same_ordinal_value_conflicts": {},
+  "nonlocal_or_duplicate_signers": [],
+  "ordinal_regressions": [],
+  "recovery_locks": [
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 7,
+      "phase": "CollectingFacilities",
+      "time": 1788735870.717
+    },
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735935.678
+    },
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788736000.681
+    },
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 10,
+      "phase": "CollectingFacilities",
+      "time": 1788736111.041
+    },
+    {
+      "node": "mc-candidate-1788735394-0",
+      "ordinal": 10,
+      "phase": "CollectingProposals",
+      "time": 1788736118.068
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 6,
+      "phase": "CollectingFacilities",
+      "time": 1788735801.41
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 7,
+      "phase": "CollectingFacilities",
+      "time": 1788735866.368
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735931.372
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735996.374
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 10,
+      "phase": "CollectingFacilities",
+      "time": 1788736061.379
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 10,
+      "phase": "CollectingProposals",
+      "time": 1788736121.669
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 6,
+      "phase": "CollectingFacilities",
+      "time": 1788735801.352
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 7,
+      "phase": "CollectingFacilities",
+      "time": 1788735866.322
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735931.333
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735996.331
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 10,
+      "phase": "CollectingFacilities",
+      "time": 1788736061.334
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 10,
+      "phase": "CollectingProposals",
+      "time": 1788736121.799
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 7,
+      "phase": "CollectingFacilities",
+      "time": 1788735869.748
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735934.687
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735999.695
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 10,
+      "phase": "CollectingFacilities",
+      "time": 1788736064.694
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 10,
+      "phase": "CollectingProposals",
+      "time": 1788736121.738
+    }
+  ],
+  "healthy_recovery_locks": [
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735935.678
+    },
+    {
+      "node": "mc-candidate-1788735394-4",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788736000.681
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735931.372
+    },
+    {
+      "node": "mc-candidate-1788735394-2",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735996.374
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735931.333
+    },
+    {
+      "node": "mc-candidate-1788735394-1",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735996.331
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 8,
+      "phase": "CollectingFacilities",
+      "time": 1788735934.687
+    },
+    {
+      "node": "mc-candidate-1788735394-3",
+      "ordinal": 9,
+      "phase": "CollectingFacilities",
+      "time": 1788735999.695
+    }
+  ],
+  "progress_after_restore": [
+    {
+      "node": 0,
+      "advanced": true
+    },
+    {
+      "node": 1,
+      "advanced": true
+    },
+    {
+      "node": 2,
+      "advanced": true
+    },
+    {
+      "node": 3,
+      "advanced": true
+    },
+    {
+      "node": 4,
+      "advanced": false
+    }
+  ],
+  "final_api_availability": [
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "node_ranges": [
+    {
+      "node": 0,
+      "first": 1,
+      "last": 11
+    },
+    {
+      "node": 1,
+      "first": 6,
+      "last": 11
+    },
+    {
+      "node": 2,
+      "first": 6,
+      "last": 11
+    },
+    {
+      "node": 3,
+      "first": 7,
+      "last": 11
+    },
+    {
+      "node": 4,
+      "first": 7,
+      "last": 9
+    }
+  ],
+  "complete_phase_records": 31,
+  "nodes_with_complete_phase_records": 5,
+  "median_round_seconds": 58.221,
+  "limitations": [
+    "Sampled values are JSON digests, not protocol hashes or independent signature verification.",
+    "Tip sampling can miss intermediate snapshots and forks outside the sample window.",
+    "Fault injection is wall-time based, not phase-aligned; do not infer causal throughput gains from it."
+  ]
+}

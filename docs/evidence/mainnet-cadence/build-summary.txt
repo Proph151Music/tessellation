@@ -1,0 +1,28 @@
+Clean validation: corrected cadence candidate
+Local behavior commit: 9cd7ed151c58a6924eac1fc7ccab5f51f34d6a93
+Published equivalent source commit: 6cecca592c7c70a3fb4ca5500fb887313d77ba63
+Source trees verified identical: 5e8dc74acd401dbf327ca71b00a28ba31f9cbb03
+SBT exit code: 0
+Full local log SHA256: 7ac5baa1552e33cc57516604946d03f2356e618774b5c5b4fa495374d8b4d652
+Full log basename: candidate-v3-clean-tests-build.log
+Commands and environment caveats: ../../mainnet-timed-consensus-tests.md
+
+[success] Total time: 1 s, completed Sep 6, 2026, 11:39:38 PM
+[success] Total time: 3 s, completed Sep 6, 2026, 11:39:41 PM
+[success] Total time: 0 s, completed Sep 6, 2026, 11:39:41 PM
+[info] Passed: Total 295, Failed 0, Errors 0, Passed 295
+[success] Total time: 384 s (06:24), completed Sep 6, 2026, 11:46:05 PM
+[info] Passed: Total 93, Failed 0, Errors 0, Passed 93, Ignored 2
+[success] Total time: 179 s (02:59), completed Sep 6, 2026, 11:49:04 PM
+[info] Passed: Total 41, Failed 0, Errors 0, Passed 41
+[success] Total time: 78 s (01:18), completed Sep 6, 2026, 11:50:22 PM
+[info] Passed: Total 132, Failed 0, Errors 0, Passed 132
+[success] Total time: 9 s, completed Sep 6, 2026, 11:50:31 PM
+[success] Total time: 29 s, completed Sep 6, 2026, 11:51:00 PM
+[success] Total time: 0 s, completed Sep 6, 2026, 11:51:00 PM
+[success] Total time: 0 s, completed Sep 6, 2026, 11:51:01 PM
+[success] Total time: 0 s, completed Sep 6, 2026, 11:51:01 PM
+[success] Total time: 0 s, completed Sep 6, 2026, 11:51:01 PM
+openjdk version "21.0.12" 2026-07-21
+OpenJDK Runtime Environment (build 21.0.12+8-1-26.04-Ubuntu)
+OpenJDK 64-Bit Server VM (build 21.0.12+8-1-26.04-Ubuntu, mixed mode, sharing)

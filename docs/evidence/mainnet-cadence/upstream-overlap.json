@@ -1,0 +1,230 @@
+{
+  "checked_at_utc": "2026-09-07T00:10:00Z",
+  "mainnet_base": "9b1f826db65d56d1736a298fd18c842e0c93f5d6",
+  "develop_base": "65b3667d414760763fe342e720a9486d2c0beb82",
+  "candidate_at_audit": "9094a2c34",
+  "scope": "All nine open upstream PRs; changed-file intersection with candidate tracked changes. File intersection is not proof of behavioral independence.",
+  "pull_requests": [
+    {
+      "number": 1597,
+      "title": "fix(config): align ordinal defaults and repository guidance",
+      "head": "b2c4e9f1b1b47c476b3c698b453af6adf03d3ab7",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-09-06T21:02:46Z",
+      "changed_file_count": 26,
+      "overlapping_files": [
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala"
+      ],
+      "files": [
+        ".claude/commands/debug-e2e-logs.md",
+        ".github/pull_request_template.md",
+        "AGENTS.md",
+        "CLAUDE.md",
+        "CONTRIBUTING.md",
+        "README.md",
+        "docker/README.md",
+        "docker/bin/compose-runner-down.sh",
+        "docker/bin/set-env.sh",
+        "docs/CODEBASE_MAP.md",
+        "docs/adr/0034-consensus-schema-change-governance.md",
+        "docs/adr/TEMPLATE.md",
+        "docs/operations/fields-added-ordinals.md",
+        "docs/operations/local-e2e-cluster-investigation.md",
+        "docs/release/RELEASE_POLICY.md",
+        "justfile",
+        "modules/currency-l0/src/main/scala/io/constellationnetwork/currency/l0/modules/Services.scala",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotConsensus.scala",
+        "modules/node-shared/src/main/resources/application.conf",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/app/TessellationIOApp.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/CurrencySnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/GlobalSnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/GlobalSnapshotStateChannelEventsProcessor.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/modules/SharedServices.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/config/FieldsAddedOrdinalsSuite.scala"
+      ]
+    },
+    {
+      "number": 1596,
+      "title": "fix(dag-l0): harden downloaded snapshot head handoff",
+      "head": "0431a5d35fa0c9b4d46415a63ff53a3832697d29",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-09-06T19:35:28Z",
+      "changed_file_count": 15,
+      "overlapping_files": [],
+      "files": [
+        ".github/workflows/e2e-just-test.yml",
+        "docker/bin/compose-runner.sh",
+        "docker/bin/test-rollback-download-head.sh",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/Main.scala",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/StoragesInitializer.scala",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/domain/snapshot/programs/Download.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/MainSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/StoragesInitializerSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/domain/snapshot/programs/DownloadHeadPublicationSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/domain/snapshot/programs/DownloadSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/SnapshotStorageSuite.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/domain/snapshot/storage/SnapshotStorage.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/storage/LastNGlobalSnapshotStorage.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/storage/SnapshotStorage.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/storage/LastNGlobalSnapshotStorageInitializationSuite.scala"
+      ]
+    },
+    {
+      "number": 1595,
+      "title": "test(e2e): cover delegated withdrawal replacement race",
+      "head": "a787b14c06659f8df95193d99a1ffad8c590676c",
+      "base": "fix/mainnet-delegated-withdrawal-safety",
+      "draft": false,
+      "updated_at": "2026-09-04T18:42:00Z",
+      "changed_file_count": 2,
+      "overlapping_files": [],
+      "files": [
+        ".github/action_scripts/delegated_staking/delegated-staking.js",
+        ".github/workflows/test-delegated-staking.yml"
+      ]
+    },
+    {
+      "number": 1594,
+      "title": "fix(node-shared): validate fee transactions individually and apply the ones that pass",
+      "head": "81fec15a02bc75783a4e00ad9a40fdca812236fc",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-09-04T16:47:39Z",
+      "changed_file_count": 3,
+      "overlapping_files": [],
+      "files": [
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/BalanceOpsManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/CurrencySnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/BalanceOpsManagerFeeTxsSuite.scala"
+      ]
+    },
+    {
+      "number": 1593,
+      "title": "fix(dag-l0): harden delegated stake withdrawal settlement",
+      "head": "2b4f826c0827b438748bf403653d63f77f0d517c",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-09-06T19:35:44Z",
+      "changed_file_count": 17,
+      "overlapping_files": [
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala"
+      ],
+      "files": [
+        "docs/operations/fields-added-ordinals.md",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotConsensus.scala",
+        "modules/dag-l0/src/main/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotConsensusFunctions.scala",
+        "modules/node-shared/src/main/resources/application.conf",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/domain/delegatedStake/UpdateDelegatedStakeAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/ext/pureconfig/pureconfig.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/DelegatedRewardsDistributor.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/GlobalSnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/TokenLockStateManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/modules/SharedServices.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/config/FieldsAddedOrdinalsSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/domain/delegatedStake/UpdateDelegatedStakeAcceptanceManagerSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/DelegatedRewardsDistributorSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/GlobalSnapshotAcceptanceManagerSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/Mocks.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/TokenLockStateManagerSuite.scala"
+      ]
+    },
+    {
+      "number": 1592,
+      "title": "fix(dag-l0): harden delegated stake withdrawal processing",
+      "head": "c734a03132f280aa58d63c601c749a390d99ac7b",
+      "base": "release/mainnet",
+      "draft": false,
+      "updated_at": "2026-09-06T19:36:03Z",
+      "changed_file_count": 8,
+      "overlapping_files": [
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala"
+      ],
+      "files": [
+        "modules/node-shared/src/main/resources/application.conf",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/domain/delegatedStake/UpdateDelegatedStakeAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/GlobalSnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/modules/SharedServices.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/config/DelegatedStakeWithdrawalOrdinalConfigSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/domain/delegatedStake/UpdateDelegatedStakeAcceptanceManagerSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/GlobalSnapshotDelegatedStakeUnlockSuite.scala"
+      ]
+    },
+    {
+      "number": 1591,
+      "title": "chore(deps-dev): bump fast-uri from 3.1.5 to 3.1.7",
+      "head": "3b99fe5f5b74c69610360a9bc82934858c9a980e",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-09-02T23:47:20Z",
+      "changed_file_count": 1,
+      "overlapping_files": [],
+      "files": [
+        "package-lock.json"
+      ]
+    },
+    {
+      "number": 1538,
+      "title": "feat: fee transaction lookup in L0NodeContext",
+      "head": "44cadb0638d0080616c11cd081d2e7b98f653cf6",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-08-07T17:11:22Z",
+      "changed_file_count": 15,
+      "overlapping_files": [],
+      "files": [
+        ".github/action_scripts/send_transactions/data-invalid-fee.js",
+        ".github/action_scripts/send_transactions/data-with-fee.js",
+        ".github/action_scripts/send_transactions/data-without-fee.js",
+        ".github/templates/metagraphs/project_template/modules/l0/src/main/scala/com/my/project_template/l0/Main.scala",
+        ".github/templates/metagraphs/project_template/modules/shared_data/src/main/scala/com/my/project_template/shared_data/LifecycleSharedFunctions.scala",
+        ".github/templates/metagraphs/project_template/modules/shared_data/src/main/scala/com/my/project_template/shared_data/combiners/Combiners.scala",
+        ".github/templates/metagraphs/project_template/modules/shared_data/src/main/scala/com/my/project_template/shared_data/types/Types.scala",
+        ".github/workflows/e2e-just-test.yml",
+        "docker/bin/compose-runner.sh",
+        "modules/currency-l0/src/main/scala/io/constellationnetwork/currency/l0/node/L0NodeContext.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/dataApplication/DataApplicationTraverse.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/DataApplicationSnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/dataApplication/DataApplicationTraverseSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/DataApplicationSnapshotAcceptanceManagerSuite.scala",
+        "modules/shared/src/main/scala/io/constellationnetwork/currency/dataApplication/package.scala"
+      ]
+    },
+    {
+      "number": 1526,
+      "title": "Feat/l0 burn transaction",
+      "head": "de08653be62d5cde164dc1812da20ee0c7ab8945",
+      "base": "develop",
+      "draft": false,
+      "updated_at": "2026-07-24T03:19:34Z",
+      "changed_file_count": 18,
+      "overlapping_files": [
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala"
+      ],
+      "files": [
+        "modules/currency-l1/src/test/scala/io/constellationnetwork/currency/l1/domain/snapshots/programs/CurrencySnapshotProcessorSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/BurnActionSnapshotIntegrationSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotConsensusFunctionsSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotStateChannelEventsProcessorSuite.scala",
+        "modules/dag-l0/src/test/scala/io/constellationnetwork/dag/l0/infrastructure/snapshot/GlobalSnapshotTraverseSuite.scala",
+        "modules/dag-l1/src/test/scala/io/constellationnetwork/dag/l1/domain/snapshot/programs/SnapshotProcessorSuite.scala",
+        "modules/node-shared/src/main/resources/application.conf",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/config/types.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/domain/swap/BurnActionValidator.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/AllowSpendOpsManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/currency/CurrencySnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/AllowSpendStateManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/GlobalSnapshotAcceptanceManager.scala",
+        "modules/node-shared/src/main/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/SpendTransactionBalanceManager.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/domain/swap/BurnActionValidatorSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/domain/swap/BurnTransactionBalanceSuite.scala",
+        "modules/node-shared/src/test/scala/io/constellationnetwork/node/shared/infrastructure/snapshot/managers/global/Mocks.scala",
+        "modules/shared/src/main/scala/io/constellationnetwork/schema/artifact.scala"
+      ]
+    }
+  ]
+}
