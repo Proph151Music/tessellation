@@ -1,0 +1,17 @@
+Extracted from gossip-query-reset-final-20260907.log
+Full local log SHA256: 4b2eb3b1d66b1c62cb206247de0566e3f6fafb83819d3201e1426ce954197f5c
+Command and toolchain: ../../gossip-query-disconnect-recovery.md
+Suite order: nodeShared, dagL0, currencyL0, shared; then formatting and dagL0/assembly.
+This is a selected result-line extract, not a full raw test log or GitHub CI result.
+
+[info] Passed: Total 304, Failed 0, Errors 0, Passed 304
+[success] Total time: 74 s (01:14), completed Sep 7, 2026, 9:57:01 PM
+[info] Passed: Total 93, Failed 0, Errors 0, Passed 93, Ignored 2
+[success] Total time: 56 s, completed Sep 7, 2026, 9:57:57 PM
+[info] Passed: Total 41, Failed 0, Errors 0, Passed 41
+[success] Total time: 21 s, completed Sep 7, 2026, 9:58:18 PM
+[info] Passed: Total 132, Failed 0, Errors 0, Passed 132
+[success] Total time: 10 s, completed Sep 7, 2026, 9:58:28 PM
+[success] Total time: 0 s, completed Sep 7, 2026, 9:58:28 PM
+[success] Total time: 0 s, completed Sep 7, 2026, 9:58:28 PM
+[success] Total time: 33 s, completed Sep 7, 2026, 9:59:01 PM
