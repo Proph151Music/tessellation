@@ -37,6 +37,7 @@ def summarize(root):
         after = [p for p in points if restored_at is not None and p["time"] > restored_at]
         progress_after_restore.append(dict(node=node, advanced=bool(before and after and after[-1]["ordinal"] > before[-1]["ordinal"])))
     phases = []
+    recovery_locks = []
     healthy_recovery_locks = []
     five_ready_at = next((e["time"] for e in events if e["kind"] == "five_ready"), None)
     paused_at = next((e["time"] for e in events if e["kind"] == "paused"), None)
@@ -62,11 +63,13 @@ def summarize(root):
             previous = timestamp
             rounds[int(ordinal)].setdefault(phase, timestamp + rollover)
             absolute = day_start + timestamp + rollover
-            if (lock_status == "Closed" and (ordinal, phase) not in seen_locks
-                    and five_ready_at is not None and paused_at is not None
-                    and five_ready_at < absolute < paused_at):
+            if lock_status == "Closed" and (ordinal, phase) not in seen_locks:
                 seen_locks.add((ordinal, phase))
-                healthy_recovery_locks.append(dict(node=log.stem, ordinal=int(ordinal), phase=phase, time=absolute))
+                lock = dict(node=log.stem, ordinal=int(ordinal), phase=phase, time=absolute)
+                recovery_locks.append(lock)
+                if (five_ready_at is not None and paused_at is not None
+                        and five_ready_at < absolute < paused_at):
+                    healthy_recovery_locks.append(lock)
         names = ["CollectingFacilities", "CollectingProposals", "CollectingSignatures", "Finished"]
         for ordinal, transitions in sorted(rounds.items()):
             if all(name in transitions for name in names):
@@ -82,6 +85,7 @@ def summarize(root):
                    ordinals_compared_across_nodes=sum(len(v) > 1 for v in observers.values()),
                    same_ordinal_value_conflicts=conflicts, nonlocal_or_duplicate_signers=invalid_signer_sets,
                    ordinal_regressions=regressions,
+                   recovery_locks=recovery_locks,
                    healthy_recovery_locks=healthy_recovery_locks,
                    progress_after_restore=progress_after_restore,
                    final_api_availability=[tip is not None for tip in rows[-1]["tips"]] if rows else [],
