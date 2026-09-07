@@ -23,7 +23,11 @@ def main():
     parser.add_argument("--stock-jar")
     parser.add_argument("--period", help="Candidate GL0 start-to-start period, e.g. '65 seconds'; unset tests legacy mode")
     parser.add_argument("--seconds", type=int, default=300)
+    parser.add_argument("--pause-seconds", type=int, default=75,
+                        help="Fault duration target; actual timestamps include sampling/controller overhead")
     args = parser.parse_args()
+    if args.pause_seconds <= 0 or args.pause_seconds >= args.seconds / 2:
+        parser.error("--pause-seconds must be positive and shorter than half the measurement window")
     if args.mode == "mixed" and not args.stock_jar:
         parser.error("--stock-jar is required for mixed mode")
     if args.mode == "stock" and args.period:
@@ -176,7 +180,7 @@ def main():
                 run("docker", "pause", names[4])
                 event("paused", node=4)
                 impaired = True
-            if elapsed >= args.seconds / 2 + 75 and not restored:
+            if elapsed >= args.seconds / 2 + args.pause_seconds and not restored:
                 run("docker", "unpause", names[4])
                 event("restored", node=4)
                 restored = True
