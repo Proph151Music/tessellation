@@ -66,6 +66,32 @@ object TimeoutMiddlewareSuite extends SimpleIOSuite {
     }
   }
 
+  test("a separate total response deadline expires even while chunks keep arriving") {
+    TestControl.executeEmbed {
+      for {
+        received <- Ref.of[IO, Int](0)
+        released <- Ref.of[IO, Int](0)
+        body = Stream.repeatEval(IO.sleep(1.second).as(1.toByte))
+        transport = Client[IO] { _ =>
+          Resource.make(IO.pure(Response[IO]().withBodyStream(body)))(_ => released.update(_ + 1))
+        }
+        start <- IO.monotonic
+        result <- withTimeout(transport, timeout, 10.seconds)
+          .stream(request)
+          .flatMap(_.body)
+          .evalTap(_ => received.update(_ + 1))
+          .compile
+          .drain
+          .attempt
+        elapsed <- IO.monotonic.map(_ - start)
+        receivedCount <- received.get
+        releasedCount <- released.get
+      } yield
+        expect(result.left.exists(_.isInstanceOf[TimeoutException])) &&
+          expect.same(elapsed, 10.seconds) && expect(receivedCount > 1) && expect.same(releasedCount, 1)
+    }
+  }
+
   test("slow downstream processing does not consume the body-idle deadline") {
     TestControl.executeEmbed {
       val transport = Client[IO](_ => Resource.pure(Response[IO]().withBodyStream(Stream.emit(1.toByte).covary[IO])))

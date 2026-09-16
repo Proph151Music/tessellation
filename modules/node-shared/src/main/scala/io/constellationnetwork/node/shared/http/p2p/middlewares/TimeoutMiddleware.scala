@@ -22,11 +22,29 @@ object TimeoutMiddleware {
     stream.pull.timed(go).stream
   }
 
-  def withTimeout[F[_]: Async](client: Client[F], timeout: FiniteDuration): Client[F] =
+  private def withResponseBodyTimeout[F[_]: Async](
+    client: Client[F],
+    acquisitionTimeout: FiniteDuration,
+    transformBody: Stream[F, Byte] => Stream[F, Byte]
+  ): Client[F] =
     Client { req =>
       client
         .run(req)
-        .timeout(timeout)
-        .map(response => response.withBodyStream(timeoutBetweenChunks(response.body, timeout)))
+        .timeout(acquisitionTimeout)
+        .map(response => response.withBodyStream(transformBody(response.body)))
     }
+
+  def withTimeout[F[_]: Async](client: Client[F], timeout: FiniteDuration): Client[F] =
+    withResponseBodyTimeout(client, timeout, timeoutBetweenChunks(_, timeout))
+
+  def withTimeout[F[_]: Async](
+    client: Client[F],
+    acquisitionTimeout: FiniteDuration,
+    responseTimeout: FiniteDuration
+  ): Client[F] =
+    withResponseBodyTimeout(
+      client,
+      acquisitionTimeout,
+      body => timeoutBetweenChunks(body, acquisitionTimeout).timeout(responseTimeout)
+    )
 }

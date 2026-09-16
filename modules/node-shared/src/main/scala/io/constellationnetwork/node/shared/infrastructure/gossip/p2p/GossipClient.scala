@@ -40,7 +40,8 @@ object GossipClient {
     session: Session[F],
     gossipTimeoutsConfig: GossipTimeoutsConfig
   ): GossipClient[F] = {
-    val timeoutClient: Client[F] = withTimeout(client, gossipTimeoutsConfig.client)
+    val timeoutClient: Client[F] =
+      withTimeout(client, gossipTimeoutsConfig.client, gossipTimeoutsConfig.response)
 
     new GossipClient[F] {
       implicit val facade: Facade[Json] = new CirceSupportParser(None, false).facade

@@ -39,7 +39,7 @@ import weaver.SimpleIOSuite
 object GossipResponseDeadlineSuite extends SimpleIOSuite {
   private val id = PeerId(Hex("1" * 128))
   private val context = P2PContext(Host.fromString("127.0.0.1").get, Port.fromInt(9001).get, id)
-  private val config = GossipTimeoutsConfig(10.seconds, 5.seconds)
+  private val config = GossipTimeoutsConfig(10.seconds, 5.seconds, 15.seconds)
   private val rumor = Signed(
     PeerRumorRaw(id, Ordinal.MinValue, Json.fromString("test"), ContentType("test")),
     NonEmptySet.one(SignatureProof(id.toId, Signature(Hex("1" * 128))))
@@ -112,6 +112,26 @@ object GossipResponseDeadlineSuite extends SimpleIOSuite {
         result <- query(transport).compile.toList
         elapsed <- IO.monotonic.map(_ - start)
       } yield expect.same(result, List(rumor)) && expect(elapsed > 5.seconds) && expect(elapsed < 15.seconds)
+    }
+  }
+
+  test("a continuously trickled incomplete body cannot hold a gossip worker forever") {
+    TestControl.executeEmbed {
+      for {
+        chunks <- Ref.of[IO, Int](0)
+        released <- Ref.of[IO, Int](0)
+        body = Stream.repeatEval(IO.sleep(100.millis) >> chunks.update(_ + 1).as(32.toByte))
+        transport = Client[IO] { _ =>
+          Resource.make(IO.pure(Response[IO]().putHeaders(`X-Id`(id)).withBodyStream(body)))(_ => released.update(_ + 1))
+        }
+        start <- IO.monotonic
+        result <- query(transport).compile.drain.attempt
+        elapsed <- IO.monotonic.map(_ - start)
+        received <- chunks.get
+        releasedCount <- released.get
+      } yield
+        expect(result.left.exists(_.isInstanceOf[TimeoutException])) &&
+          expect.same(elapsed, config.response) && expect(received > 100) && expect.same(releasedCount, 1)
     }
   }
 
